@@ -6,27 +6,49 @@
   <title>Обновление приложения — Складсборка</title>
   <style>
     body {
-      background-color: #000;
+      background-image: url("https://img.goodfon.ru/wallpaper/nbig/6/be/priroda-igry-peizazhi-igra-game-landscape-nature-castle-sred.webp"); /* ← сюда вставь ссылку на фото */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+      height: 100vh;
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
       color: #fff;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      font-family: "Segoe UI", sans-serif;
       text-align: center;
-      margin: 0;
+      overflow: hidden;
     }
+
+    /* затемняем фон для читаемости текста */
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 0;
+    }
+
+    h1, p, a, footer {
+      position: relative;
+      z-index: 1;
+    }
+
     h1 {
       color: #d32f2f;
       font-size: 28px;
       margin-bottom: 10px;
     }
+
     p {
       color: #ccc;
       font-size: 16px;
       margin-bottom: 40px;
     }
+
     a.download-btn {
       background-color: #d32f2f;
       color: #fff;
@@ -38,15 +60,18 @@
       transition: background 0.25s, transform 0.1s;
       box-shadow: 0 0 15px rgba(211, 47, 47, 0.4);
     }
+
     a.download-btn:hover {
       background-color: #b71c1c;
       transform: translateY(-2px);
     }
+
     footer {
       position: absolute;
       bottom: 20px;
       font-size: 13px;
-      color: #666;
+      color: #aaa;
+      z-index: 1;
     }
   </style>
 </head>
