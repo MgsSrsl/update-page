@@ -2,16 +2,48 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Обновление приложения</title>
+  <title>Загрузка обновления — Складсборка</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 50px; }
-    a { display: inline-block; margin-top: 20px; padding: 12px 24px;
-        background: #d32f2f; color: white; text-decoration: none; border-radius: 6px; }
+    body {
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      text-align: center;
+    }
+    h1 { color: #d32f2f; font-size: 28px; margin-bottom: 10px; }
+    p { color: #bbb; margin-bottom: 40px; }
+    a {
+      background: #d32f2f;
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      border: 2px solid #00ff66; /* зелёная обводка */
+      box-shadow: 0 0 10px rgba(211, 47, 47, 0.6);
+    }
+    a:hover { background: #b71c1c; }
   </style>
 </head>
 <body>
-  <h1>Скачать последнюю версию приложения</h1>
-  <p>Версия 1.2 от 6 октября 2025</p>
-  <a href="https://disk.yandex.ru/d/lQVc6DBjBJsEYg" download>⬇ Скачать APK</a>
+  <h1>Обновление приложения</h1>
+  <p>Скачивание начнётся автоматически…</p>
+  <a id="manual" href="https://disk.yandex.ru/d/lQVc6DBjBJsEYg">
+    ⬇ Скачать вручную
+  </a>
+
+  <script>
+    // при загрузке страницы запускаем скачивание
+    const link = document.getElementById('manual').href;
+    setTimeout(() => { window.location.href = link; }, 1000);
+  </script>
 </body>
 </html>
+
