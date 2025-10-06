@@ -2,48 +2,64 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Загрузка обновления — Складсборка</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Обновление приложения — Складсборка</title>
   <style>
     body {
-      background: #000;
+      background-color: #000;
       color: #fff;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
-      margin: 0;
       font-family: "Segoe UI", sans-serif;
       text-align: center;
+      margin: 0;
     }
-    h1 { color: #d32f2f; font-size: 28px; margin-bottom: 10px; }
-    p { color: #bbb; margin-bottom: 40px; }
-    a {
-      background: #d32f2f;
+    h1 {
+      color: #d32f2f;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    p {
+      color: #ccc;
+      font-size: 16px;
+      margin-bottom: 40px;
+    }
+    a.download-btn {
+      background-color: #d32f2f;
       color: #fff;
-      padding: 14px 32px;
-      border-radius: 10px;
       text-decoration: none;
-      font-weight: bold;
-      border: 2px solid #00ff66; /* зелёная обводка */
-      box-shadow: 0 0 10px rgba(211, 47, 47, 0.6);
+      padding: 14px 36px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      transition: background 0.25s, transform 0.1s;
+      box-shadow: 0 0 15px rgba(211, 47, 47, 0.4);
     }
-    a:hover { background: #b71c1c; }
+    a.download-btn:hover {
+      background-color: #b71c1c;
+      transform: translateY(-2px);
+    }
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 13px;
+      color: #666;
+    }
   </style>
 </head>
 <body>
-  <h1>Обновление приложения</h1>
-  <p>Скачивание начнётся автоматически…</p>
-  <a id="manual" href="https://disk.yandex.ru/d/lQVc6DBjBJsEYg">
-    ⬇ Скачать вручную
+  <h1>Доступно обновление 📦</h1>
+  <p>Версия 1.3 от 6 октября 2025</p>
+  <a
+    class="download-btn"
+    href="https://drive.google.com/file/d/14vOf1vjY_Wfbf_uNcuoWUnmHp-hD7vIB/view?usp=drive_link"
+    download
+  >
+    ⬇ Скачать APK
   </a>
-
-  <script>
-    // при загрузке страницы запускаем скачивание
-    const link = document.getElementById('manual').href;
-    setTimeout(() => { window.location.href = link; }, 1000);
-  </script>
+  <footer>Складсборка © 2025</footer>
 </body>
 </html>
-
