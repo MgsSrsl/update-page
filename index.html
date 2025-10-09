@@ -6,129 +6,181 @@
   <title>Обновления — Складсборка</title>
   <style>
     :root{
-      --bg:#0b0d10; --card:#12161b; --muted:#a6b0bf; --text:#e8eef7; --brand:#ff3b30;
-      --sep:rgba(255,255,255,.08);
+      /* ВАЖНО: подставь сюда свой фон (твой текущий файл/URL) */
+      --bg-img: url("./your-background.jpg");
+      --scrim: rgba(8,12,16,.72);
+      --card: rgba(18,22,27,.82);
+      --card-border: rgba(255,255,255,.08);
+      --text: #e8eef7;
+      --muted: #a6b0bf;
+      --brand: #ff3b30;
+      --radius: 16px;
+      --wrap: 1120px;
     }
-    *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#0b0d10,#0e1318);
-      color:var(--text);font:16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, Arial}
-    a{color:#9dc1ff;text-decoration:none} a:hover{text-decoration:underline}
-    .wrap{max-width:1100px;margin:0 auto;padding:24px}
-    .grid{display:grid;grid-template-columns:2fr 1fr;gap:20px}
-    @media (max-width:900px){.grid{grid-template-columns:1fr}}
-    .card{background:var(--card);border:1px solid var(--sep);border-radius:16px;box-shadow:0 6px 30px rgba(0,0,0,.25)}
-    .hero{padding:22px 22px 10px}
-    .hero h1{margin:0 0 6px;font-size:28px}
-    .meta{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:14px}
-    .chips{display:flex;gap:8px;margin:10px 0 14px}
-    .chip{font-size:12px;padding:4px 8px;border-radius:999px;background:#1b222b;color:#cfe1ff;border:1px solid var(--sep)}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--text);
+      font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+      overflow-x:hidden;
+    }
+
+    /* === Фон: твоя картинка + лёгкая дымка для читабельности === */
+    .page-bg{
+      position:fixed; inset:0; z-index:-2;
+      background-image: var(--bg-img);
+      background-size:cover; background-position:center;
+      filter: saturate(1.05) contrast(1.02);
+      transform: translateZ(0);
+    }
+    .page-scrim{
+      position:fixed; inset:0; z-index:-1;
+      background: radial-gradient(1200px 600px at 70% -10%, rgba(0,0,0,.25), transparent 60%),
+                  linear-gradient(180deg, rgba(0,0,0,.2), rgba(0,0,0,.55) 60%, rgba(0,0,0,.75));
+      backdrop-filter: blur(8px);
+    }
+
+    /* === Контейнер и сетка === */
+    .wrap{max-width:var(--wrap); margin:0 auto; padding:24px 16px;}
+    header{margin:8px 0 18px; display:flex; align-items:center; gap:10px}
+    header h1{margin:0; font-size:20px; font-weight:700; letter-spacing:.2px}
+    .grid{
+      display:grid; gap:20px;
+      grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+      align-items:start;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns: 1fr}
+      .side{position:static}
+    }
+
+    /* === Карточки === */
+    .card{
+      background:var(--card);
+      border:1px solid var(--card-border);
+      border-radius:var(--radius);
+      box-shadow:0 10px 40px rgba(0,0,0,.35);
+      overflow:hidden;
+    }
+    .hero{padding:22px 22px 8px}
+    .hero h2{margin:0; font-size:28px; line-height:1.2}
+    .meta{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    .chip{
+      font-size:12px; padding:5px 10px; border-radius:999px;
+      background:rgba(255,255,255,.06); border:1px solid var(--card-border); color:#dbe9ff;
+    }
     .content{padding:0 22px 18px}
-    .content ul{margin:0 0 8px 18px}
-    .dl{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--sep);
-      background:#1a2430;color:#eaf2ff;text-decoration:none;font-weight:600}
-    .btn svg{width:18px;height:18px}
-    .side{display:flex;flex-direction:column;gap:12px}
-    .side .title{font-weight:700;font-size:14px;color:#cbd5e1;letter-spacing:.02em;margin:0 8px}
-    .acc{border-radius:14px;overflow:hidden;border:1px solid var(--sep);background:#11161c}
-    .accBtn{all:unset;display:flex;justify-content:space-between;align-items:center;width:100%;
-      padding:12px 14px;cursor:pointer}
-    .accBtn:hover{background:#141a21}
-    .accBtn h3{margin:0;font-size:15px}
-    .accBtn .small{color:var(--muted);font-size:12px}
-    .accPanel{max-height:0;overflow:hidden;transition:max-height .25s ease}
-    .accPanel.open{max-height:420px}
-    .accPanel .pad{padding:0 14px 14px}
-    .sep{height:1px;background:var(--sep);margin:10px 0}
-    .foot{margin-top:32px;color:var(--muted);font-size:13px;text-align:center}
+    .content ul{margin:10px 0 0 20px}
+    .btnrow{display:flex; gap:12px; flex-wrap:wrap; margin-top:14px}
+    .btn{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:12px 14px; border-radius:12px; font-weight:700;
+      background:#1a2430; border:1px solid var(--card-border); color:#eaf2ff; text-decoration:none;
+      transition:transform .08s ease, background .2s ease;
+    }
+    .btn:active{transform: translateY(1px)}
+    .btn svg{width:18px; height:18px}
+    @media (max-width: 520px){ .btn{width:100%; justify-content:center} }
+
+    /* === Боковая колонка с аккордеонами === */
+    .side{display:flex; flex-direction:column; gap:12px}
+    .sideTitle{font:700 14px/1.2 system-ui; color:#d6deea; margin:0 4px}
+    .acc{border-radius:14px; overflow:hidden; border:1px solid var(--card-border); background:rgba(15,20,26,.9)}
+    .accBtn{
+      all:unset; width:100%; cursor:pointer;
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      padding:14px 14px;
+    }
+    .accBtn h3{margin:0; font-size:15px}
+    .accBtn small{color:var(--muted)}
+    .accBtn:focus-visible{outline:2px solid #7db3ff; outline-offset:-2px; border-radius:10px}
+    .accPanel{max-height:0; overflow:hidden; transition:max-height .28s ease}
+    .accPanel.open{max-height:460px}
+    .accPad{padding:0 14px 14px}
+    .sep{height:1px; background:var(--card-border); margin:8px 0}
+
+    footer{margin:28px 0 10px; text-align:center; color:var(--muted); font-size:13px}
+
+    /* Мелкая типографика и доступность */
+    a:hover{text-decoration:underline}
+    @media (prefers-reduced-motion: reduce){
+      .accPanel{transition:none}
+      .btn{transition:none}
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="grid">
-      <!-- Left: Latest release will be injected here -->
-      <div id="latest"></div>
+  <!-- ТВОЙ ФОН -->
+  <div class="page-bg" aria-hidden="true"></div>
+  <div class="page-scrim" aria-hidden="true"></div>
 
-      <!-- Right: Older releases as collapsible items -->
+  <div class="wrap">
+    <header>
+      <h1>Обновления приложения</h1>
+    </header>
+
+    <div class="grid">
+      <!-- ЛЕВАЯ КОЛОНКА: ПОСЛЕДНИЙ РЕЛИЗ -->
+      <main id="latest"></main>
+
+      <!-- ПРАВАЯ КОЛОНКА: ПРОШЛЫЕ РЕЛИЗЫ -->
       <aside class="side">
-        <p class="title">Предыдущие версии</p>
+        <p class="sideTitle">Предыдущие версии</p>
         <div id="older"></div>
       </aside>
     </div>
 
-    <p class="foot">MgsINC © <span id="year"></span></p>
+    <footer>MgsINC © <span id="year"></span></footer>
   </div>
 
   <script>
-    // ====== ДАННЫЕ ПРО ОБНОВЛЕНИЯ ======
-    // Первый элемент считается «последним» и показывается крупно.
+    // ====== ДАННЫЕ РЕЛИЗОВ ======
     const releases = [
       {
         version: "1.1",
-        date: "2025-10-08",         // YYYY-MM-DD (удобно для сортировки)
+        date: "2025-10-08",
         title: "Доступно обновление",
         bullets: [
-          "✅ Внесены изменения в дизайн карточек и фона, мелкие визуальные правки.",
-          "Поддержка старых версий Android (возможна некорректная работа на части устройств).",
-          "⚙️ Сортировщики задач: при «Взять в работу» задача закрепляется за кладовщиком.",
-          "Редактор изображения в задаче — можно помечать на фото позиции.",
-          "Информация о новой версии и ссылке на скачивание приходит каждому пользователю в заданиях.",
-          "Мелкие исправления интерфейса и оптимизация кода."
+          "Внесены изменения в дизайн карточек и фона.",
+          "Поддержка старых версий Android.",
+          "Сортировщики задач: «Взять в работу» закрепляет задачу.",
+          "Редактор изображения в задаче — пометки на фото.",
+          "Информация о новой версии и ссылке на скачивание в заданиях.",
+          "Исправления и оптимизации."
         ],
         apkUrl: "https://apk-download-gamma.vercel.app"
       },
-      // Примеры прошлых версий (добавляй сюда по мере выхода новых)
-      {
-        version: "1.0.5",
-        date: "2025-09-24",
-        bullets: [
-          "Стабильность: фикс падения при открытии изображений.",
-          "Ускорена подгрузка списка задач."
-        ]
-      },
-      {
-        version: "1.0.4",
-        date: "2025-09-12",
-        bullets: [
-          "Добавлены уведомления о новых задачах.",
-          "Мелкие улучшения UI."
-        ]
-      }
+      { version:"1.0.5", date:"2025-09-24", bullets:["Фикс падения при открытии изображений.","Ускорена подгрузка списка задач."]},
+      { version:"1.0.4", date:"2025-09-12", bullets:["Добавлены уведомления о новых задачах.","Мелкие улучшения UI."]},
     ];
 
-    // ====== РЕНДЕР ======
     const $latest = document.getElementById("latest");
     const $older  = document.getElementById("older");
+
     const fmt = (iso) => {
-      try{
-        const d = new Date(iso+"T00:00:00");
-        return d.toLocaleDateString("ru-RU",{day:"2-digit",month:"long",year:"numeric"});
-      }catch{ return iso }
+      const d = new Date(iso + "T00:00:00");
+      return isNaN(d) ? iso : d.toLocaleDateString("ru-RU",{day:"2-digit",month:"long",year:"numeric"});
     };
 
+    function iconDownload(){
+      return `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M5 20h14v-2H5v2zm7-18-5.5 5.5 1.41 1.41L11 6.83V16h2V6.83l3.09 3.08 1.41-1.41L12 2z"/>
+      </svg>`;
+    }
+
     function renderLatest(r){
-      const chips = [
-        `<span class="chip">Версия ${r.version}</span>`,
-        `<span class="chip">${fmt(r.date)}</span>`
-      ].join("");
-
+      const chips = [`<span class="chip">Версия ${r.version}</span>`,`<span class="chip">${fmt(r.date)}</span>`].join("");
       const bullets = (r.bullets||[]).map(b=>`<li>${b}</li>`).join("");
-
       $latest.innerHTML = `
         <article class="card">
           <div class="hero">
-            <h1>${r.title || "Что нового"}</h1>
-            <div class="meta">
-              <div class="chips">${chips}</div>
-            </div>
+            <h2>${r.title || "Что нового"}</h2>
+            <div class="meta">${chips}</div>
           </div>
           <div class="content">
             <ul>${bullets}</ul>
-            <div class="dl">
-              ${r.apkUrl ? `<a class="btn" href="${r.apkUrl}">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M5 20h14v-2H5v2zm7-18-5.5 5.5 1.41 1.41L11 6.83V16h2V6.83l3.09 3.08 1.41-1.41L12 2z"/>
-                </svg> Скачать APK
-              </a>`:``}
+            <div class="btnrow">
+              ${r.apkUrl ? `<a class="btn" href="${r.apkUrl}">${iconDownload()}Скачать APK</a>` : ``}
             </div>
           </div>
         </article>
@@ -140,14 +192,13 @@
         <section class="acc">
           <button class="accBtn" aria-expanded="false">
             <h3>Версия ${r.version}</h3>
-            <span class="small">${fmt(r.date)}</span>
+            <small>${fmt(r.date)}</small>
           </button>
-          <div class="accPanel" id="panel-${i}">
+          <div class="accPanel" id="p-${i}">
             <div class="sep"></div>
-            <div class="pad">
+            <div class="accPad">
               <ul>${(r.bullets||[]).map(b=>`<li>${b}</li>`).join("")}</ul>
-              ${r.apkUrl?`<div class="sep"></div>
-                <a class="btn" href="${r.apkUrl}">Скачать APK</a>`:""}
+              ${r.apkUrl ? `<div class="sep"></div><a class="btn" href="${r.apkUrl}">Скачать APK</a>` : ``}
             </div>
           </div>
         </section>
@@ -155,17 +206,19 @@
 
       // Аккордеон
       $older.querySelectorAll(".accBtn").forEach((btn, idx)=>{
-        const panel = document.getElementById(`panel-${idx}`);
+        const panel = document.getElementById(`p-${idx}`);
         btn.addEventListener("click", ()=>{
-          const isOpen = panel.classList.toggle("open");
-          btn.setAttribute("aria-expanded", String(isOpen));
+          const was = panel.classList.contains("open");
+          // Закрываем остальные, чтобы не «уезжало»
+          $older.querySelectorAll(".accPanel.open").forEach(p=>p.classList.remove("open"));
+          panel.classList.toggle("open", !was);
+          btn.setAttribute("aria-expanded", String(!was));
         });
       });
     }
 
-    // Гарантируем, что самый свежий — первый (вдруг забудешь порядок)
-    releases.sort((a,b)=> (b.date>a.date?1:-1));
-
+    // Порядок по дате, чтобы не уехало при добавлении
+    releases.sort((a,b)=> (a.date<b.date ? 1 : -1));
     renderLatest(releases[0]);
     renderOlder(releases.slice(1));
     document.getElementById("year").textContent = new Date().getFullYear();
