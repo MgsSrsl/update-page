@@ -94,7 +94,7 @@
 
     <div class="changelog" id="changelog">
       <h2>Что нового</h2>
-      <ul class="list" id="main-list"><!-- рендер свежих релизов --></ul>
+      <ul class="list" id="main-list"></ul>
     </div>
 
     <a class="download-btn" id="download-link" href="https://apk-download-gamma.vercel.app/app-release.apk" download>
@@ -107,7 +107,7 @@
   <!-- История -->
   <aside class="versions-panel">
     <h2 onclick="toggleHistory()">📜 История версий</h2>
-    <div id="history-list" class="collapsed"><!-- рендер старых релизов --></div>
+    <div id="history-list" class="collapsed"></div>
   </aside>
 
   <!-- Кнопка и панель администратора -->
@@ -124,7 +124,7 @@
         <input id="v-date" type="date" />
       </div>
     </div>
-    <label>Заголовок/тип (например: Hotfix, Обновление функционала)</label>
+    <label>Заголовок/тип</label>
     <input id="v-title" placeholder="Hotfix / Обновление функционала" />
 
     <label>Пункты (по одному на строку)</label>
@@ -150,111 +150,101 @@
       <button class="btn secondary" id="copy-history">📋 Скопировать HTML «История»</button>
       <button class="btn secondary" id="export">⬇️ Экспорт JSON</button>
       <button class="btn secondary" id="import">⬆️ Импорт JSON</button>
-      <button class="btn secondary" id="reset">🗑 Сбросить (очистить всё)</button>
+      <button class="btn secondary" id="reset">🗑 Сбросить (очистить локальный секрет)</button>
     </div>
-    <div class="small">Данные хранятся локально в браузере (localStorage). На Vercel ничего дополнительно не нужно.</div>
+    <div class="small">Данные хранятся в GitHub. Секрет-ключ на клиенте — только в sessionStorage (на время вкладки).</div>
   </div>
 
   <script>
-    // ====== МОДЕЛЬ ДАННЫХ ======
-    const STORAGE_KEY = "skladsborka_changelog_v1";
+    // ===== Конфиг клиента =====
+    const API_URL = "/api/changelog";
+    const STORAGE_KEY = "skladsborka_admin_secret_v1";
     const DEFAULT_SHOW_ON_MAIN = 2;
 
+    // ——— Утилиты ———
     function todayISO(){
-      const d = new Date();
-      const tzOffset = d.getTimezoneOffset()*60000;
-      return new Date(d - tzOffset).toISOString().slice(0,10);
+      const d = new Date(); const tzo = d.getTimezoneOffset()*60000;
+      return new Date(d - tzo).toISOString().slice(0,10);
+    }
+    function escapeHTML(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+    function formatDate(iso){
+      if (!iso) return "";
+      const [y,m,d]=iso.split("-");
+      const months={"01":"января","02":"февраля","03":"марта","04":"апреля","05":"мая","06":"июня","07":"июля","08":"августа","09":"сентября","10":"октября","11":"ноября","12":"декабря"};
+      return `${Number(d)} ${months[m]||m} ${y}`;
+    }
+    function parseSemverLike(v=""){
+      const m=String(v).trim().match(/^(\d+)(?:\.(\d+))?(?:\.(\d+))?(.*)?$/);
+      if(!m) return [0,0,0,""];
+      return [Number(m[1]||0),Number(m[2]||0),Number(m[3]||0),String(m[4]||"")];
+    }
+    function cmpRelease(a,b){
+      const ad=a?.date||"", bd=b?.date||"";
+      if(ad!==bd) return bd.localeCompare(ad);
+      const [a1,a2,a3,as]=parseSemverLike(a?.version);
+      const [b1,b2,b3,bs]=parseSemverLike(b?.version);
+      if(a1!==b1) return b1-a1;
+      if(a2!==b2) return b2-a2;
+      if(a3!==b3) return b3-a3;
+      return String(bs).localeCompare(String(as));
     }
 
-    const state = loadState() || seedInitial();
+    // ——— Состояние ———
+    let state = { showOnMain: DEFAULT_SHOW_ON_MAIN, apkUrl: "", releases: [] };
 
-    function seedInitial(){
-      // Начальная структура — можно сразу заменить твоими релизами.
-      return {
-        showOnMain: 2,
-        apkUrl: "https://apk-download-gamma.vercel.app/app-release.apk",
-        releases: [
-          {
-            version: "1.3.1",
-            date: "2025-10-20",
-            title: "Hotfix",
-            items: [
-              "🔧 При переключении режимов <b>«карандаш» / «приблизить»</b> всплывающие окна <b>больше не появляются</b>.",
-              "🔧 Исправлена карточка задачи — теперь <b>кликабельна вся область</b>.",
-              "🗃️ <b>Корректная архивация</b> старых задач.",
-              "🖼️ Добавлена <b>индикация загрузки изображения</b> при открытии задачи.",
-              "🖨️ <b>Новая функция:</b> печать изображения/файла прямо из задачи."
-            ]
-          },
-          {
-            version: "1.2",
-            date: "2025-10-12",
-            title: "Обновление функционала",
-            items: [
-              "📢 При появлении новой версии — <b>верхний баннер</b> с кнопкой «Обновить». Если основная кнопка недоступна, есть <b>запасная</b> — ведёт на страницу обновления.",
-              "📷 В создании задачи добавлена кнопка <b>«Сделать фото»</b>.",
-              "📲 Исправлены push-уведомления — при нажатии открывается <b>нужная задача</b>.",
-              "🗄️ <b>Архивация и очистка</b> выполненных задач (режим <i>Начальник</i>).",
-              "🔢 На главном экране кладовщика под кнопками отображается <b>количество задач</b> — видно без перехода в раздел.",
-              "🚪 Кнопка <b>«Выход»</b> аккуратно перенесена в нижнюю часть главного экрана."
-            ]
-          },
-          {
-            version: "20.10",
-            date: "2025-10-10",
-            title: "HotFix",
-            items: [
-              "👷‍♂️ <b>Для кладовщика:</b> кнопка «Обновить список задач», ⏱️ индикатор времени, ⚠️ предупреждение об отсутствии сети.",
-              "👨‍💼 <b>Для начальника:</b> автоматические уведомления о самовывозах.",
-              "🌐 <b>Для всех:</b> индикация соединения — 🟢 «В сети», 🟡 «Плохая связь»; 📡 рекомендация обновлять списки; 🚫 баннер при отсутствии интернета.",
-              "🖼️ Пролистывание фото в превью задач.",
-              "⏰ Показ времени создания/старта/завершения задачи.",
-              "💼 <b>Для менеджера:</b> обратные push-уведомления о выполненных задачах."
-            ]
-          }
-        ]
-      };
+    // ——— API ———
+    async function apiGet() {
+      const r = await fetch(API_URL, { cache: "no-store" });
+      if (!r.ok) throw new Error(`GET ${r.status}`);
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error||"bad");
+      return j.data;
+    }
+    async function apiPost(payload){
+      const secret = sessionStorage.getItem(STORAGE_KEY) || "";
+      const r = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type":"application/json", "x-admin-secret": secret },
+        body: JSON.stringify(payload)
+      });
+      const j = await r.json().catch(()=> ({}));
+      if (!r.ok || !j.ok) throw new Error(j.error || `POST ${r.status}`);
+      return j;
+    }
+    async function apiDelete(version){
+      const secret = sessionStorage.getItem(STORAGE_KEY) || "";
+      const r = await fetch(`${API_URL}?version=`+encodeURIComponent(version), {
+        method: "DELETE",
+        headers: { "x-admin-secret": secret }
+      });
+      const j = await r.json().catch(()=> ({}));
+      if (!r.ok || !j.ok) throw new Error(j.error || `DELETE ${r.status}`);
+      return j;
     }
 
-    function loadState(){
-      try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)); }catch(e){ return null; }
-    }
-    function saveState(){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }
-
-    // ====== РЕНДЕР ======
+    // ——— Рендер ———
     function render(){
-      // Хедер
-      const year = document.getElementById("year");
-      year.textContent = new Date().getFullYear();
-
+      document.getElementById("year").textContent = new Date().getFullYear();
       const mainList = document.getElementById("main-list");
-      const history = document.getElementById("history-list");
-      mainList.innerHTML = ""; history.innerHTML = "";
+      const history  = document.getElementById("history-list");
+      mainList.innerHTML=""; history.innerHTML="";
 
-      // сортировка по дате (новые сверху)
-      const releases = [...state.releases].sort((a,b)=> (b.date||"").localeCompare(a.date||""));
+      const releases = (state.releases||[]).slice().sort(cmpRelease);
 
-      // заголовок страницы
       if (releases.length){
         document.getElementById("page-subtitle").textContent =
           `Версия ${releases[0].version} от ${formatDate(releases[0].date)}`;
       }
 
-      // APK ссылка
-      document.getElementById("download-link").href = state.apkUrl || "https://apk-download-gamma.vercel.app/app-release.apk";
+      document.getElementById("download-link").href =
+        state.apkUrl?.trim() || "https://apk-download-gamma.vercel.app/app-release.apk";
 
-      // сколько показывать на главной
       const n = Number(state.showOnMain || DEFAULT_SHOW_ON_MAIN);
 
       releases.forEach((rel, idx)=>{
         const block = releaseToMainBlock(rel);
-        if (idx < n) {
-          mainList.appendChild(block);
-        } else {
-          history.appendChild(releaseToHistoryBlock(rel));
-        }
+        if (idx < n) mainList.appendChild(block);
+        else history.appendChild(releaseToHistoryBlock(rel, true));
       });
     }
 
@@ -262,126 +252,139 @@
       const li = document.createElement("li");
       li.innerHTML = `
         <span class="title">🆕 Версия ${escapeHTML(rel.version)} — ${escapeHTML(rel.title||"Обновление")}</span>
+        <div style="opacity:.7;margin-top:2px">${formatDate(rel.date||"")}</div>
         <ul class="sub">
-          ${rel.items.map(s=>`<li>${s}</li>`).join("")}
+          ${(rel.items||[]).map(s=>`<li>${s}</li>`).join("")}
         </ul>`;
       return li;
     }
 
-    function releaseToHistoryBlock(rel){
+    function releaseToHistoryBlock(rel, withAdminControls=false){
       const wrap = document.createElement("div");
       wrap.className = "old-version";
       wrap.innerHTML = `
         <strong>Версия ${escapeHTML(rel.version)} — ${formatDate(rel.date)}</strong>
-        <ul>
-          ${rel.items.map(s=>`<li>${s}</li>`).join("")}
-        </ul>`;
+        <ul>${(rel.items||[]).map(s=>`<li>${s}</li>`).join("")}</ul>
+      `;
+      if (withAdminControls && sessionStorage.getItem(STORAGE_KEY)) {
+        const btn = document.createElement("button");
+        btn.textContent = "Удалить версию";
+        btn.className = "btn secondary inline";
+        btn.style.marginTop = "6px";
+        btn.onclick = async () => {
+          if (!confirm(`Удалить версию ${rel.version}?`)) return;
+          try { await apiDelete(rel.version); await load(); alert("Удалено"); }
+          catch(e){ alert("Ошибка удаления: "+e.message); }
+        };
+        wrap.appendChild(btn);
+      }
       return wrap;
     }
 
-    function formatDate(iso){
-      if (!iso) return "";
-      const [y,m,d] = iso.split("-");
-      return `${Number(d)} ${ruMonth(m)} ${y}`;
-    }
-    function ruMonth(m){
-      const map = {
-        "01":"января","02":"февраля","03":"марта","04":"апреля","05":"мая","06":"июня",
-        "07":"июля","08":"августа","09":"сентября","10":"октября","11":"ноября","12":"декабря"
-      };
-      return map[m] || m;
-    }
-    function escapeHTML(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-
-    // ====== АДМИН ======
-    const gear = document.getElementById("gear");
+    // ——— Админка ———
+    const gear  = document.getElementById("gear");
     const admin = document.getElementById("admin");
-    gear.addEventListener("click", ()=> {
+
+    gear.addEventListener("click", async ()=> {
+      if (!sessionStorage.getItem(STORAGE_KEY)) {
+        const s = prompt("Введи админ-секрет");
+        if (!s) return;
+        sessionStorage.setItem(STORAGE_KEY, s);
+      }
       admin.style.display = (admin.style.display==="block"?"none":"block");
-      // поставить сегодняшнюю дату если пусто
       const dateEl = document.getElementById("v-date");
       if(!dateEl.value) dateEl.value = todayISO();
-      // заполнить селект и ссылку по состоянию
       document.getElementById("v-on-main").value = String(state.showOnMain || DEFAULT_SHOW_ON_MAIN);
       document.getElementById("v-apk").value = state.apkUrl || "";
     });
 
-    document.getElementById("publish").addEventListener("click", ()=>{
+    document.getElementById("publish").addEventListener("click", async ()=>{
       const version = document.getElementById("v-version").value.trim();
-      const date = document.getElementById("v-date").value || todayISO();
-      const title = document.getElementById("v-title").value.trim() || "Обновление";
-      const itemsRaw = document.getElementById("v-items").value.trim();
+      const date    = document.getElementById("v-date").value || todayISO();
+      const title   = document.getElementById("v-title").value.trim() || "Обновление";
+      const itemsRaw= document.getElementById("v-items").value.trim();
       const showOnMain = Number(document.getElementById("v-on-main").value || DEFAULT_SHOW_ON_MAIN);
-      const apk = document.getElementById("v-apk").value.trim();
+      const apk     = document.getElementById("v-apk").value.trim();
 
-      if (!version || !itemsRaw){
-        alert("Укажи версию и пункты релиза (по одному на строку).");
-        return;
-      }
-      const items = itemsRaw.split(/\r?\n/).filter(Boolean).map(line => line.trim());
+      if (!version || !itemsRaw){ alert("Укажи версию и пункты релиза (по одному на строку)."); return; }
 
-      // добавить релиз
-      state.releases.push({version, date, title, items});
-      state.showOnMain = showOnMain;
-      if (apk) state.apkUrl = apk;
-
-      saveState(); render();
-      // очистим ввод только пункты/заголовок/версию (дату оставим)
-      document.getElementById("v-version").value = "";
-      document.getElementById("v-title").value = "";
-      document.getElementById("v-items").value = "";
+      const items = itemsRaw.split(/\r?\n/).filter(Boolean).map(s=>s.trim());
+      const release = { version, date, title, items };
+      try{
+        await apiPost({ release, showOnMain, apkUrl: apk || undefined });
+        document.getElementById("v-version").value = "";
+        document.getElementById("v-title").value = "";
+        document.getElementById("v-items").value = "";
+        await load();
+        alert("Опубликовано");
+      }catch(e){ alert("Ошибка публикации: "+e.message); }
     });
 
-    // Копирование HTML блоков (для вставки на твою существующую страницу)
-    function copyHTML(selector){
-      const node = document.querySelector(selector);
-      const html = node.innerHTML.trim();
-      navigator.clipboard.writeText(html).then(()=> alert("HTML скопирован в буфер обмена"));
-    }
     document.getElementById("copy-main").addEventListener("click", ()=> copyHTML("#main-list"));
     document.getElementById("copy-history").addEventListener("click", ()=> copyHTML("#history-list"));
-
-    // Импорт/экспорт
-    document.getElementById("export").addEventListener("click", ()=>{
+    document.getElementById("export").addEventListener("click", async ()=>{
       const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
       const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "changelog.json";
-      a.click();
+      a.href = URL.createObjectURL(blob); a.download = "changelog.json"; a.click();
       URL.revokeObjectURL(a.href);
     });
     document.getElementById("import").addEventListener("click", async ()=>{
-      const input = document.createElement("input");
-      input.type = "file"; input.accept = "application/json";
-      input.onchange = async () => {
-        const file = input.files[0]; if(!file) return;
-        const text = await file.text();
-        try{
-          const obj = JSON.parse(text);
-          if (!obj.releases) throw new Error("Нет поля releases");
-          state.releases = obj.releases;
-          state.showOnMain = obj.showOnMain || DEFAULT_SHOW_ON_MAIN;
-          state.apkUrl = obj.apkUrl || state.apkUrl;
-          saveState(); render();
-        }catch(e){ alert("Не удалось импортировать JSON: "+e.message); }
-      };
-      input.click();
+      alert("Импорт из файла отключён — исходник хранится в GitHub. Правь файл в репозитории.");
     });
-
     document.getElementById("reset").addEventListener("click", ()=>{
-      if (confirm("Точно очистить все релизы? Это удалит данные в браузере.")){
-        localStorage.removeItem(STORAGE_KEY);
-        location.reload();
+      if (confirm("Очистить локальные данные админа (секрет)?")) {
+        sessionStorage.removeItem(STORAGE_KEY);
+        alert("Сброшено. Открой панель заново.");
       }
     });
+
+    function copyHTML(selector){
+      const node = document.querySelector(selector);
+      const html = (node?.innerHTML||"").trim();
+      navigator.clipboard.writeText(html).then(()=> alert("HTML скопирован"));
+    }
+
+    async function load(){
+      const data = await apiGet();
+      state = data || { showOnMain: DEFAULT_SHOW_ON_MAIN, apkUrl:"", releases:[] };
+      render();
+    }
 
     function toggleHistory(){
       document.getElementById("history-list").classList.toggle("collapsed");
     }
     window.toggleHistory = toggleHistory;
 
-    // Первичная инициализация
-    render();
+    // старт
+    (async ()=> {
+      try { await load(); }
+      catch(e){
+        console.error(e);
+        // Fallback (если API недоступно)
+        state = {
+          showOnMain: 2,
+          apkUrl: "https://apk-download-gamma.vercel.app/app-release.apk",
+          releases: [
+            { version:"1.3.1", date:"2025-10-20", title:"Hotfix", items:[
+              "🔧 При переключении режимов <b>«карандаш» / «приблизить»</b> всплывающие окна <b>больше не появляются</b>.",
+              "🔧 Исправлена карточка задачи — теперь <b>кликабельна вся область</b>.",
+              "🗃️ <b>Корректная архивация</b> старых задач.",
+              "🖼️ Добавлена <b>индикация загрузки изображения</b> при открытии задачи.",
+              "🖨️ <b>Новая функция:</b> печать изображения/файла прямо из задачи."
+            ]},
+            { version:"1.2", date:"2025-10-12", title:"Обновление функционала", items:[
+              "📢 Баннер обновления с запасной кнопкой.",
+              "📷 «Сделать фото» в создании задачи.",
+              "📲 Push-уведомления открывают нужную задачу.",
+              "🗄️ Архивация выполненных задач (Начальник).",
+              "🔢 Кол-во задач под кнопками (Кладовщик).",
+              "🚪 Кнопка «Выход» перенесена вниз."
+            ]}
+          ]
+        };
+        render();
+      }
+    })();
   </script>
 </body>
 </html>
