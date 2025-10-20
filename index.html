@@ -1,4 +1,238 @@
-<!-- === ПАНЕЛЬ УПРАВЛЕНИЯ РЕЛИЗАМИ: Модалка, логика 2 последних, генерация index.html === -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Обновление приложения — Складсборка</title>
+  <style>
+    body {
+      background-image: url("https://img.goodfon.ru/wallpaper/nbig/6/be/priroda-igry-peizazhi-igra-game-landscape-nature-castle-sred.webp");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+      min-height: 100vh;
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      overflow-y: auto; /* можно скроллить */
+      padding: 40px 20px 80px; /* нижний отступ, чтобы ничего не перекрывалось */
+      box-sizing: border-box;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 0;
+    }
+
+    h1, p, a, footer, .changelog, .page-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-wrap { max-width: 720px; }
+
+    h1 {
+      color: #ff5252;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #ccc;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    .changelog {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 18px 28px;
+      max-width: 420px;
+      text-align: left;
+      font-size: 15px;
+      color: #eee;
+      line-height: 1.5;
+      margin-bottom: 35px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .changelog h2 {
+      font-size: 18px;
+      color: #ff8a80;
+      margin-top: 0;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .changelog ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    a.download-btn {
+      background-color: #d32f2f;
+      color: #fff;
+      text-decoration: none;
+      padding: 14px 36px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      transition: background 0.25s, transform 0.1s;
+      box-shadow: 0 0 15px rgba(211, 47, 47, 0.4);
+      margin-bottom: 40px; /* не прижималась к низу */
+      display: inline-block;
+    }
+
+    a.download-btn:hover {
+      background-color: #b71c1c;
+      transform: translateY(-2px);
+    }
+
+    footer {
+      font-size: 13px;
+      color: #aaa;
+      z-index: 1;
+      margin-top: auto; /* уезжает вниз, если контента мало */
+    }
+
+    /* ====== ПАНЕЛЬ ИСТОРИИ ВЕРСИЙ (справа, под катом) ====== */
+    .versions-panel {
+      position: fixed;
+      right: 20px;
+      top: 100px;
+      width: 280px;
+      max-height: 70vh;
+      overflow-y: auto;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(8px);
+      border-radius: 12px;
+      padding: 12px 18px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      color: #fff;
+      font-size: 14px;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 2; /* поверх затемнения */
+    }
+    .versions-panel h2 {
+      font-size: 16px;
+      color: #ff8a80;
+      margin: 0 0 10px 0;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .versions-panel h2::after {
+      content: " ▼";
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    #history-list.collapsed { display: none; }
+    .old-version {
+      margin-bottom: 12px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      padding-top: 8px;
+      text-align: left;
+      line-height: 1.4;
+    }
+    .old-version strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #ffd1ce;
+    }
+    .old-version ul {
+      margin: 0 0 6px 18px;
+      padding: 0;
+    }
+
+    /* На узких экранах панель уходит вниз и становится блочным элементом */
+    @media (max-width: 980px) {
+      .versions-panel {
+        position: static;
+        width: auto;
+        max-width: 720px;
+        margin: 10px auto 0;
+      }
+      .page-wrap { max-width: 720px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <h1>Доступно обновление  📦</h1>
+    <p>Версия 1.3.1 от 16 октября 2025</p>
+
+    <div class="changelog">
+      <h2>Что нового</h2>
+      <ul>
+  <li>🔧 При переключении режимов <b>«карандаш» / «приблизить»</b> больше <b>не появляются всплывающие окна</b>.</li>
+  <li>🔧 Исправлена карточка задачи — теперь <b>вся область карточки кликабельна</b>.</li>
+  <li>🗃️ <b>Корректная архивация старых задач</b>.</li>
+  <li>🖼️ Добавлена <b>индикация загрузки изображения</b> при открытии задачи.</li>
+  <li>🖨️ Новая функция — <b>печать изображения или файла прямо из задачи</b>.</li>
+</ul>
+    </div>
+
+    <a class="download-btn" href="https://apk-download-gamma.vercel.app/app-release.apk" download>
+      ⬇ Скачать APK
+    </a>
+
+    <footer>MgsINC © 2025</footer>
+  </div>
+
+  <!-- Правый блок: история версий под катом -->
+  <div class="versions-panel">
+    <h2 onclick="toggleHistory()">📜 История версий</h2>
+    <div id="history-list" class="collapsed">
+      <div class="old-version">
+        <strong>Версия 1.3 — 12 октября 2025</strong>
+        <ul>
+   <li>🔧 При переключении режимов <b>«карандаш» / «приблизить»</b> больше <b>не появляются всплывающие окна</b>.</li>
+  <li>🔧 Исправлена карточка задачи — теперь <b>вся область карточки кликабельна</b>.</li>
+  <li>🗃️ <b>Корректная архивация старых задач</b>.</li>
+  <li>🖼️ Добавлена <b>индикация загрузки изображения</b> при открытии задачи.</li>
+  <li>🖨️ Новая функция — <b>печать изображения или файла прямо из задачи</b>.</li>
+        </ul>
+      </div>
+      <div class="old-version">
+        <strong>Версия 1.1 — 06 октября 2025</strong>
+        <ul>
+          <li>✅ Внесены изменения в дизайн карточек и фона, а также много мелких визуальных правок.</li>
+        <li>📱 Добавлена поддержка старых версий Android (возможна некорректная работа на некоторых устройствах).</li>
+        <li>⚙️ Добавлены сортировщики задач: теперь при нажатии «Взять в работу» задача закрепляется за кладовщиком, который её взял.</li>
+        <li>🚀 Добавлена функция редактирования изображения в задаче, можно помечать на фото собранные позиции.</li>
+        <li>🚀 Информация о новой версии и ссылке на скачивание теперь приходит каждому пользователю в заданиях.</li>
+        <li>🧹 Мелкие исправления интерфейса и оптимизация кода.</li>
+        </ul>
+      </div>
+      <div class="old-version">
+        <strong>Версия 1 — 1 августа 2025</strong>
+        <ul>
+          <li>🧩 Я родился .</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleHistory() {
+      const list = document.getElementById("history-list");
+      list.classList.toggle("collapsed");
+    }
+  </script>
+  <!-- === ПАНЕЛЬ УПРАВЛЕНИЯ РЕЛИЗАМИ: Модалка, логика 2 последних, генерация index.html === -->
 <style>
   /* Карточки релизов */
   .old-version{margin-bottom:12px;border-top:1px solid rgba(255,255,255,0.2);padding-top:8px;text-align:left;line-height:1.4}
@@ -285,8 +519,10 @@ ${state.historyHTML}
 
   <!-- Вставляем обратно этот же генератор (управление релизами и экспорт) -->
   ${document.currentScript?.outerHTML ?? ''} 
-
 </body>
 </html>`;
   }
 </script>
+
+</body>
+</html>
