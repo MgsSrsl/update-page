@@ -128,75 +128,9 @@
       </div></div>
   </div>
 
-  <!-- Кнопка-шестерёнка и скрытые действия -->
-<button id="gearBtn">⚙️</button>
-<button id="exportBtn" class="hidden">📄 Сгенерировать index.html</button>
-<button id="addReleaseBtn" class="hidden">➕ Добавить релиз</button>
-
-<style>
-  /* Шестерёнка */
-  #gearBtn {
-    position: fixed;
-    left: 20px;
-    bottom: 20px;
-    width: 48px; height: 48px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.3);
-    color: #fff;
-    font-size: 22px;
-    cursor: pointer;
-    z-index: 1000;
-    backdrop-filter: blur(6px);
-    transition: transform 0.2s, background 0.2s;
-  }
-  #gearBtn:hover { background: rgba(255,255,255,0.3); transform: rotate(45deg); }
-
-  /* Кнопки управления — теперь скрываем по умолчанию */
-  #addReleaseBtn, #exportBtn {
-    position: fixed;
-    left: 20px;
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-weight: 700;
-    font-size: 15px;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,.4);
-    z-index: 999;
-    padding: 10px 16px;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(10px);
-    transition: opacity .25s, transform .25s;
-  }
-  #addReleaseBtn { background: #ff5252; bottom: 20px; }
-  #exportBtn { background: #2e7d32; bottom: 70px; }
-  #addReleaseBtn:hover { background:#b71c1c; }
-  #exportBtn:hover { background:#1b5e20; }
-
-  /* Когда активны — показываем */
-  #addReleaseBtn.visible, #exportBtn.visible {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0);
-  }
-</style>
-
-<script>
-  // Переключение видимости кнопок под шестерёнкой
-  (function(){
-    const gear = document.getElementById('gearBtn');
-    const addBtn = document.getElementById('addReleaseBtn');
-    const expBtn = document.getElementById('exportBtn');
-    let shown = false;
-
-    gear.addEventListener('click', () => {
-      shown = !shown;
-      [addBtn, expBtn].forEach(btn => btn.classList.toggle('visible', shown));
-    });
-  })();
-</script>
+  <!-- Кнопки -->
+  <button id="exportBtn">📄 Сгенерировать index.html</button>
+  <button id="addReleaseBtn">➕ Добавить релиз</button>
 
   <!-- Модалка добавления -->
   <div class="modal" id="addModal" style="display: none;">
@@ -347,5 +281,7 @@ ${notes.map(n => `    <li>${n}</li>`).join('\n')}
     })();
   </script>
 
+
+</body></html>
 
 </body></html>
