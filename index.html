@@ -7,94 +7,51 @@
   <style>
     body {
       background-image: url("https://img.goodfon.ru/wallpaper/nbig/6/be/priroda-igry-peizazhi-igra-game-landscape-nature-castle-sred.webp");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      position: relative;
-      min-height: 100vh;
-      margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      overflow-y: auto;
-      padding: 40px 20px 80px;
-      box-sizing: border-box;
+      background-size: cover; background-position: center; background-repeat: no-repeat;
+      position: relative; min-height: 100vh; margin: 0;
+      font-family: "Segoe UI", sans-serif; color: #fff;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      overflow-y: auto; padding: 40px 20px 80px; box-sizing: border-box;
     }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      z-index: 0;
-    }
-    h1, p, a, footer, .changelog, .page-wrap {
-      position: relative;
-      z-index: 1;
-    }
+    body::before { content: ""; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 0; }
+    h1, p, a, footer, .changelog, .page-wrap { position: relative; z-index: 1; }
     .page-wrap { max-width: 720px; }
     h1 { color: #ff5252; font-size: 28px; margin-bottom: 10px; }
     p { color: #ccc; font-size: 16px; margin-bottom: 30px; }
 
     .changelog {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 12px;
-      padding: 18px 28px;
-      max-width: 420px;
-      text-align: left;
-      font-size: 15px;
-      color: #eee;
-      line-height: 1.5;
-      margin-bottom: 35px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      margin-left: auto;
-      margin-right: auto;
+      background: rgba(255,255,255,.1); backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,.2); border-radius: 12px;
+      padding: 18px 28px; max-width: 420px; text-align: left; font-size: 15px;
+      color: #eee; line-height: 1.5; margin: 0 auto 35px; box-shadow: 0 4px 20px rgba(0,0,0,.3);
     }
-    .changelog h2 { font-size: 18px; color: #ff8a80; margin-top: 0; margin-bottom: 10px; text-align: center; }
+    .changelog h2 { font-size: 18px; color: #ff8a80; margin: 0 0 10px; text-align: center; }
     .changelog ul { margin: 0; padding-left: 20px; }
 
     a.download-btn {
-      background-color: #d32f2f;
-      color: #fff;
-      text-decoration: none;
-      padding: 14px 36px;
-      border-radius: 10px;
-      font-size: 18px;
-      font-weight: 600;
-      transition: background 0.25s, transform 0.1s;
-      box-shadow: 0 0 15px rgba(211, 47, 47, 0.4);
-      margin-bottom: 40px;
-      display: inline-block;
+      background-color: #d32f2f; color: #fff; text-decoration: none;
+      padding: 14px 36px; border-radius: 10px; font-size: 18px; font-weight: 600;
+      transition: background .25s, transform .1s; box-shadow: 0 0 15px rgba(211,47,47,.4);
+      margin-bottom: 40px; display: inline-block;
     }
     a.download-btn:hover { background-color: #b71c1c; transform: translateY(-2px); }
     footer { font-size: 13px; color: #aaa; z-index: 1; margin-top: auto; }
 
-    /* Панель истории версий */
+    /* Панель версий */
     .versions-panel {
-      position: fixed; right: 20px; top: 100px;
-      width: 280px; max-height: 70vh; overflow-y: auto;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(8px);
-      border-radius: 12px;
-      padding: 12px 18px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      color: #fff;
-      font-size: 14px;
-      z-index: 2;
+      position: fixed; right: 20px; top: 100px; width: 280px; max-height: 70vh; overflow-y: auto;
+      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2); backdrop-filter: blur(8px);
+      border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 20px rgba(0,0,0,.3); color: #fff; font-size: 14px; z-index: 2;
     }
-    .versions-panel h2 { font-size: 16px; color: #ff8a80; text-align: center; cursor: pointer; }
-    .old-version { margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px; text-align: left; line-height: 1.4; }
+    .versions-panel h2 { font-size: 16px; color: #ff8a80; text-align: center; cursor: pointer; user-select: none; margin: 0 0 10px; }
+    .versions-panel h3 { font-size: 15px; color: #ffd1ce; margin: 8px 0 10px; text-align: left; opacity: .95; }
+    .old-version { margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,.2); padding-top: 8px; text-align: left; line-height: 1.4; }
     .old-version strong { display: block; margin-bottom: 6px; color: #ffd1ce; }
     .old-version ul { margin: 0 0 6px 18px; padding: 0; }
-    #history-list.collapsed { display: none; }
     #latest-list { margin-bottom: 10px; }
-    #history-toggle { font-size: 14px; color: #fff; opacity: 0.85; cursor: pointer; margin-top: 6px; }
-    #history-toggle::after { content: " ▼"; font-size: 12px; opacity: 0.8; }
+    #history-toggle { font-size: 14px; color: #fff; opacity: .85; cursor: pointer; margin-top: 6px; user-select: none; }
+    #history-toggle::after { content: " ▼"; font-size: 12px; opacity: .8; }
+    #history-list.collapsed { display: none; }
 
     @media (max-width: 980px) {
       .versions-panel { position: static; width: auto; max-width: 720px; margin: 10px auto 0; }
@@ -103,11 +60,8 @@
 
     /* Кнопки управления */
     #addReleaseBtn, #exportBtn {
-      position: fixed; left: 20px;
-      border: none; border-radius: 8px; color: #fff;
-      font-weight: 700; font-size: 15px; cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4); z-index: 999;
-      padding: 10px 16px;
+      position: fixed; left: 20px; border: none; border-radius: 8px; color: #fff;
+      font-weight: 700; font-size: 15px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.4); z-index: 999; padding: 10px 16px;
     }
     #addReleaseBtn { background: #ff5252; bottom: 20px; }
     #exportBtn { background: #2e7d32; bottom: 70px; }
@@ -115,44 +69,25 @@
     #exportBtn:hover { background:#1b5e20; }
 
     /* Модалки */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-card {
-      background: #222;
-      padding: 24px;
-      border-radius: 12px;
-      max-width: 600px;
-      width: 92%;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-      color: #fff;
-    }
-    input, textarea {
-      width: 100%; margin: 5px 0 12px; padding: 8px;
-      border-radius: 8px; border: 1px solid #444;
-      background: #111; color: #fff;
-    }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 1000; align-items: center; justify-content: center; }
+    .modal-card { background: #222; padding: 24px; border-radius: 12px; max-width: 600px; width: 92%; box-shadow: 0 4px 20px rgba(0,0,0,.5); color: #fff; }
+    input, textarea { width: 100%; margin: 5px 0 12px; padding: 8px; border-radius: 8px; border: 1px solid #444; background: #111; color: #fff; }
     .actions { display: flex; gap: 10px; flex-wrap: wrap; }
     .btn { border: none; border-radius: 8px; color: #fff; padding: 10px 14px; font-weight: 700; cursor: pointer; }
     .btn-primary { background: #ff5252; }
     .btn-secondary { background: #555; }
     .btn-copy { background: #1976d2; }
-    textarea#resultArea, textarea#fullIndexArea { height: 200px; }
+    textarea#resultArea, textarea#fullIndexArea { height: 220px; }
   </style>
 </head>
 <body>
   <div class="page-wrap">
-    <h1>Доступно обновление 📦</h1>
-    <p>Версия 1.3.1 от 16 октября 2025</p>
+    <h1 id="mainH1">Доступно обновление 📦</h1>
+    <p id="versionLine">Версия 1.3.1 от 16 октября 2025</p>
+
     <div class="changelog">
       <h2>Что нового</h2>
-      <ul>
+      <ul id="mainChangelog">
         <li>🖨️ Новая функция — печать изображения или файла прямо из задачи.</li>
         <li>🖼️ Добавлена индикация загрузки изображения при открытии задачи.</li>
         <li>🗃️ Корректная архивация старых задач.</li>
@@ -160,29 +95,49 @@
         <li>🔧 Исправлено переключение режимов «карандаш / приблизить».</li>
       </ul>
     </div>
-    <a class="download-btn" href="https://apk-download-gamma.vercel.app/app-release.apk" download>⬇ Скачать APK</a>
-    <footer>MgsINC © 2025</footer>
+
+    <a class="download-btn" id="downloadA" href="https://apk-download-gamma.vercel.app/app-release.apk" download>⬇ Скачать APK</a>
+    <footer>MgsINC © <span id="year"></span></footer>
   </div>
 
   <!-- Панель версий -->
   <div class="versions-panel">
     <h2 onclick="toggleHistory()">📜 История версий</h2>
+
     <h3>Последние релизы</h3>
     <div id="latest-list">
       <div class="old-version">
         <strong>Версия 1.3.1 — 16 октября 2025</strong>
-        <ul><li>🖨️ Новая функция — печать изображения или файла прямо из задачи.</li></ul>
+        <ul>
+          <li>🖨️ Новая функция — печать изображения или файла прямо из задачи.</li>
+          <li>🖼️ Добавлена индикация загрузки изображения при открытии задачи.</li>
+          <li>🗃️ Корректная архивация старых задач.</li>
+          <li>🔧 Исправлена карточка задачи — теперь вся область кликабельна.</li>
+          <li>🔧 Исправлено переключение режимов «карандаш / приблизить».</li>
+        </ul>
       </div>
       <div class="old-version">
         <strong>Версия 1.3 — 12 октября 2025</strong>
-        <ul><li>🔧 Исправлена карточка задачи — теперь вся область кликабельна.</li></ul>
+        <ul>
+          <li>🔧 Исправлена карточка задачи — теперь вся область кликабельна.</li>
+          <li>🗃️ Корректная архивация старых задач.</li>
+          <li>🖼️ Индикация загрузки изображения при открытии задачи.</li>
+        </ul>
       </div>
     </div>
+
     <div id="history-toggle" onclick="toggleHistory()">Остальные</div>
     <div id="history-list" class="collapsed">
       <div class="old-version">
         <strong>Версия 1.1 — 6 октября 2025</strong>
-        <ul><li>✅ Внесены изменения в дизайн карточек и фона.</li></ul>
+        <ul>
+          <li>✅ Внесены изменения в дизайн карточек и фона.</li>
+          <li>📱 Добавлена поддержка старых версий Android.</li>
+        </ul>
+      </div>
+      <div class="old-version">
+        <strong>Версия 1 — 1 августа 2025</strong>
+        <ul><li>🧩 Я родился.</li></ul>
       </div>
     </div>
   </div>
@@ -200,7 +155,9 @@
       <label>Дата:</label>
       <input id="relDate" placeholder="20 октября 2025" />
       <label>Изменения (по строкам):</label>
-      <textarea id="relNotes"></textarea>
+      <textarea id="relNotes" placeholder="🔧 Исправлено ...
+🖨️ Добавлена печать ...
+..."></textarea>
       <div class="actions">
         <button class="btn btn-primary" id="saveRelease">Добавить</button>
         <button class="btn btn-secondary" id="closeAdd">Отмена</button>
@@ -225,39 +182,117 @@
   </div>
 
   <script>
-    function $(id){return document.getElementById(id)}
-    function toggleHistory(){ $('history-list').classList.toggle('collapsed') }
+    (function(){
+      const $ = (id) => document.getElementById(id);
 
-    // Открытие / закрытие модалок
-    $('addReleaseBtn').onclick = ()=> $('addModal').style.display='flex'
-    $('closeAdd').onclick = ()=> $('addModal').style.display='none'
-    $('exportBtn').onclick = ()=> {
-      $('fullIndexArea').value = document.documentElement.outerHTML
-      $('exportModal').style.display='flex'
-    }
-    $('closeExport').onclick = ()=> $('exportModal').style.display='none'
-    $('copyIndex').onclick = ()=> {
-      $('fullIndexArea').select(); document.execCommand('copy')
-    }
+      // год в футере
+      $('year').textContent = new Date().getFullYear();
 
-    // Добавление релиза
-    $('saveRelease').onclick = ()=>{
-      const ver = $('relVer').value.trim()
-      const date = $('relDate').value.trim()
-      const notes = $('relNotes').value.split('\n').filter(x=>x.trim())
-      if(!ver||!date||!notes.length){alert('Заполни все поля!');return}
+      function toggleHistory(){ $('history-list').classList.toggle('collapsed'); }
+      window.toggleHistory = toggleHistory; // чтобы работало с onclick у заголовка
 
-      const html = `<div class="old-version"><strong>Версия ${ver} — ${date}</strong><ul>${notes.map(n=>`<li>${n}</li>`).join('')}</ul></div>`
-      $('resultBlock').style.display='block'
-      $('resultArea').value = html
+      // ===== helpers =====
+      function makeOldVersionNode(ver, date, notes) {
+        const wrap = document.createElement('div'); wrap.className = 'old-version';
+        const strong = document.createElement('strong'); strong.textContent = `Версия ${ver} — ${date}`;
+        const ul = document.createElement('ul');
+        notes.forEach(n => { const li = document.createElement('li'); li.innerHTML = n; ul.appendChild(li); });
+        wrap.appendChild(strong); wrap.appendChild(ul);
+        return wrap;
+      }
+      function makeOldVersionHTML(ver, date, notes) {
+        return `<div class="old-version">
+  <strong>Версия ${ver} — ${date}</strong>
+  <ul>
+${notes.map(n => `    <li>${n}</li>`).join('\n')}
+  </ul>
+</div>`;
+      }
+      function reflowLists() {
+        const latest = $('latest-list'), history = $('history-list');
+        if (!latest || !history) return;
+        // Соберём все текущие .old-version, сохраним порядок (сначала уже лежащие в latest)
+        const all = [...latest.querySelectorAll('.old-version'), ...history.querySelectorAll('.old-version')];
+        latest.innerHTML = ''; history.innerHTML = '';
+        all.forEach((node, i) => (i < 2 ? latest : history).appendChild(node));
+      }
+      function parseStrong(str) {
+        // "Версия X — D" -> {ver, date}
+        const m = /^Версия\s+(.+?)\s+—\s+(.+)$/.exec(str.trim());
+        return m ? { ver: m[1], date: m[2] } : { ver: '', date: '' };
+      }
+      function updateMainFromLatest() {
+        const latest = $('latest-list');
+        const first = latest?.querySelector('.old-version');
+        if (!first) return;
+        const meta = parseStrong(first.querySelector('strong')?.textContent || '');
+        const notes = [...first.querySelectorAll('ul > li')].map(li => li.innerHTML);
 
-      const latest = $('latest-list')
-      const hist = $('history-list')
-      const temp = document.createElement('div')
-      temp.innerHTML = html
-      latest.prepend(temp.firstChild)
-      if(latest.children.length>2){hist.prepend(latest.lastElementChild)}
-    }
+        // Обновить центральную секцию (все пункты!)
+        const ul = $('mainChangelog');
+        if (ul) {
+          ul.innerHTML = '';
+          notes.forEach(n => { const li = document.createElement('li'); li.innerHTML = n; ul.appendChild(li); });
+        }
+        // Обновить строку версии
+        if (meta.ver && meta.date) $('versionLine').textContent = `Версия ${meta.ver} от ${meta.date}`;
+      }
+
+      // ===== модалки =====
+      $('addReleaseBtn').addEventListener('click', () => {
+        // автодата если пусто
+        const d = new Date();
+        const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+        const str = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        if (!$('relDate').value) $('relDate').value = str;
+        $('addModal').style.display = 'flex';
+      });
+      $('closeAdd').addEventListener('click', () => $('addModal').style.display = 'none');
+
+      $('exportBtn').addEventListener('click', () => {
+        $('fullIndexArea').value = document.documentElement.outerHTML;
+        $('exportModal').style.display = 'flex';
+      });
+      $('closeExport').addEventListener('click', () => $('exportModal').style.display = 'none');
+      $('copyIndex').addEventListener('click', () => {
+        $('fullIndexArea').select();
+        document.execCommand('copy');
+      });
+
+      // ===== добавить релиз =====
+      $('saveRelease').addEventListener('click', () => {
+        const ver = $('relVer').value.trim();
+        const date = $('relDate').value.trim();
+        const notes = $('relNotes').value.split('\n').map(s => s.trim()).filter(Boolean);
+        if (!ver || !date || notes.length === 0) { alert('Заполни версию, дату и хотя бы один пункт.'); return; }
+
+        const latest = $('latest-list'), history = $('history-list');
+        if (!latest || !history) return;
+
+        // Создаём карточку и ПРЕПЕНДИМ В latest (на главную панель, не в историю!)
+        const node = makeOldVersionNode(ver, date, notes);
+        latest.insertBefore(node, latest.firstChild);
+
+        // Оставляем в latest ровно 2, остальное — в историю
+        while (latest.children.length > 2) {
+          history.insertBefore(latest.lastElementChild, history.firstChild);
+        }
+
+        // Обновляем центральную секцию по новому релизу
+        updateMainFromLatest();
+
+        // Покажем HTML блока для точечного копипаста (если надо)
+        $('resultArea').value = makeOldVersionHTML(ver, date, notes);
+        $('resultBlock').style.display = 'block';
+
+        // Закрывать модалку не будем — удобно скопировать HTML; хочешь — раскомментируй:
+        // $('addModal').style.display = 'none';
+      });
+
+      // Инициализация при первом открытии: раскладка и синхронизация центра
+      reflowLists();
+      updateMainFromLatest();
+    })();
   </script>
 </body>
 </html>
