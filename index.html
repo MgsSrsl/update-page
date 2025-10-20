@@ -232,5 +232,54 @@
       list.classList.toggle("collapsed");
     }
   </script>
+  <button id="addReleaseBtn"
+        style="position:fixed;bottom:20px;left:20px;padding:10px 16px;
+        background:#ff5252;border:none;border-radius:8px;
+        color:#fff;font-weight:bold;font-size:15px;cursor:pointer;
+        box-shadow:0 2px 8px rgba(0,0,0,0.4);z-index:999;">
+  ➕ Добавить релиз
+</button>
+
+<div id="releaseModal" style="display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;">
+  <div style="background:#222;padding:24px;border-radius:12px;max-width:500px;width:90%;
+              box-shadow:0 4px 20px rgba(0,0,0,0.5);color:#fff;">
+    <h2 style="margin-top:0;text-align:center;">Добавить релиз</h2>
+    <label>Версия: <input id="relVer" style="width:100%;margin:5px 0;padding:6px;"/></label>
+    <label>Дата: <input id="relDate" style="width:100%;margin:5px 0;padding:6px;"/></label>
+    <label>Список изменений (по одному пункту на строку):<br/>
+      <textarea id="relNotes" style="width:100%;height:100px;margin:5px 0;padding:6px;"></textarea>
+    </label>
+    <button id="generateBtn" style="background:#ff5252;border:none;border-radius:8px;
+            color:#fff;padding:10px 20px;font-weight:bold;cursor:pointer;">Сгенерировать HTML</button>
+    <button id="closeBtn" style="margin-left:10px;padding:10px 20px;border:none;border-radius:8px;
+            background:#555;color:#fff;cursor:pointer;">Отмена</button>
+
+    <div id="resultBlock" style="margin-top:15px;display:none;">
+      <p>Скопируй этот HTML и вставь в нужное место:</p>
+      <textarea id="resultArea" style="width:100%;height:160px;"></textarea>
+    </div>
+  </div>
+</div>
+
+<script>
+const modal = document.getElementById('releaseModal');
+document.getElementById('addReleaseBtn').onclick = () => modal.style.display = 'flex';
+document.getElementById('closeBtn').onclick = () => modal.style.display = 'none';
+document.getElementById('generateBtn').onclick = () => {
+  const ver = document.getElementById('relVer').value.trim();
+  const date = document.getElementById('relDate').value.trim();
+  const notes = document.getElementById('relNotes').value.trim().split('\n').filter(x=>x);
+  const html = `
+<div class="old-version">
+  <strong>Версия ${ver} — ${date}</strong>
+  <ul>
+${notes.map(n => `    <li>${n}</li>`).join('\n')}
+  </ul>
+</div>`;
+  document.getElementById('resultArea').value = html;
+  document.getElementById('resultBlock').style.display = 'block';
+};
+</script>
 </body>
 </html>
