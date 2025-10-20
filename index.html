@@ -19,11 +19,10 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      overflow-y: auto; /* можно скроллить */
-      padding: 40px 20px 80px; /* нижний отступ, чтобы ничего не перекрывалось */
+      overflow-y: auto;
+      padding: 40px 20px 80px;
       box-sizing: border-box;
     }
-
     body::before {
       content: "";
       position: fixed;
@@ -31,25 +30,13 @@
       background: rgba(0, 0, 0, 0.6);
       z-index: 0;
     }
-
     h1, p, a, footer, .changelog, .page-wrap {
       position: relative;
       z-index: 1;
     }
-
     .page-wrap { max-width: 720px; }
-
-    h1 {
-      color: #ff5252;
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
-
-    p {
-      color: #ccc;
-      font-size: 16px;
-      margin-bottom: 30px;
-    }
+    h1 { color: #ff5252; font-size: 28px; margin-bottom: 10px; }
+    p { color: #ccc; font-size: 16px; margin-bottom: 30px; }
 
     .changelog {
       background: rgba(255, 255, 255, 0.1);
@@ -67,19 +54,8 @@
       margin-left: auto;
       margin-right: auto;
     }
-
-    .changelog h2 {
-      font-size: 18px;
-      color: #ff8a80;
-      margin-top: 0;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-
-    .changelog ul {
-      margin: 0;
-      padding-left: 20px;
-    }
+    .changelog h2 { font-size: 18px; color: #ff8a80; margin-top: 0; margin-bottom: 10px; text-align: center; }
+    .changelog ul { margin: 0; padding-left: 20px; }
 
     a.download-btn {
       background-color: #d32f2f;
@@ -91,30 +67,16 @@
       font-weight: 600;
       transition: background 0.25s, transform 0.1s;
       box-shadow: 0 0 15px rgba(211, 47, 47, 0.4);
-      margin-bottom: 40px; /* не прижималась к низу */
+      margin-bottom: 40px;
       display: inline-block;
     }
+    a.download-btn:hover { background-color: #b71c1c; transform: translateY(-2px); }
+    footer { font-size: 13px; color: #aaa; z-index: 1; margin-top: auto; }
 
-    a.download-btn:hover {
-      background-color: #b71c1c;
-      transform: translateY(-2px);
-    }
-
-    footer {
-      font-size: 13px;
-      color: #aaa;
-      z-index: 1;
-      margin-top: auto; /* уезжает вниз, если контента мало */
-    }
-
-    /* ====== ПАНЕЛЬ ИСТОРИИ ВЕРСИЙ (справа, под катом) ====== */
+    /* Панель истории версий */
     .versions-panel {
-      position: fixed;
-      right: 20px;
-      top: 100px;
-      width: 280px;
-      max-height: 70vh;
-      overflow-y: auto;
+      position: fixed; right: 20px; top: 100px;
+      width: 280px; max-height: 70vh; overflow-y: auto;
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.2);
       backdrop-filter: blur(8px);
@@ -123,406 +85,179 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
       color: #fff;
       font-size: 14px;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-      z-index: 2; /* поверх затемнения */
+      z-index: 2;
     }
-    .versions-panel h2 {
-      font-size: 16px;
-      color: #ff8a80;
-      margin: 0 0 10px 0;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
-    }
-    .versions-panel h2::after {
-      content: " ▼";
-      font-size: 12px;
-      opacity: 0.8;
-    }
+    .versions-panel h2 { font-size: 16px; color: #ff8a80; text-align: center; cursor: pointer; }
+    .old-version { margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px; text-align: left; line-height: 1.4; }
+    .old-version strong { display: block; margin-bottom: 6px; color: #ffd1ce; }
+    .old-version ul { margin: 0 0 6px 18px; padding: 0; }
     #history-list.collapsed { display: none; }
-    .old-version {
-      margin-bottom: 12px;
-      border-top: 1px solid rgba(255,255,255,0.2);
-      padding-top: 8px;
-      text-align: left;
-      line-height: 1.4;
-    }
-    .old-version strong {
-      display: block;
-      margin-bottom: 6px;
-      color: #ffd1ce;
-    }
-    .old-version ul {
-      margin: 0 0 6px 18px;
-      padding: 0;
-    }
+    #latest-list { margin-bottom: 10px; }
+    #history-toggle { font-size: 14px; color: #fff; opacity: 0.85; cursor: pointer; margin-top: 6px; }
+    #history-toggle::after { content: " ▼"; font-size: 12px; opacity: 0.8; }
 
-    /* На узких экранах панель уходит вниз и становится блочным элементом */
     @media (max-width: 980px) {
-      .versions-panel {
-        position: static;
-        width: auto;
-        max-width: 720px;
-        margin: 10px auto 0;
-      }
+      .versions-panel { position: static; width: auto; max-width: 720px; margin: 10px auto 0; }
       .page-wrap { max-width: 720px; }
     }
+
+    /* Кнопки управления */
+    #addReleaseBtn, #exportBtn {
+      position: fixed; left: 20px;
+      border: none; border-radius: 8px; color: #fff;
+      font-weight: 700; font-size: 15px; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4); z-index: 999;
+      padding: 10px 16px;
+    }
+    #addReleaseBtn { background: #ff5252; bottom: 20px; }
+    #exportBtn { background: #2e7d32; bottom: 70px; }
+    #addReleaseBtn:hover { background:#b71c1c; }
+    #exportBtn:hover { background:#1b5e20; }
+
+    /* Модалки */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-card {
+      background: #222;
+      padding: 24px;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 92%;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      color: #fff;
+    }
+    input, textarea {
+      width: 100%; margin: 5px 0 12px; padding: 8px;
+      border-radius: 8px; border: 1px solid #444;
+      background: #111; color: #fff;
+    }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { border: none; border-radius: 8px; color: #fff; padding: 10px 14px; font-weight: 700; cursor: pointer; }
+    .btn-primary { background: #ff5252; }
+    .btn-secondary { background: #555; }
+    .btn-copy { background: #1976d2; }
+    textarea#resultArea, textarea#fullIndexArea { height: 200px; }
   </style>
 </head>
 <body>
   <div class="page-wrap">
-    <h1>Доступно обновление  📦</h1>
+    <h1>Доступно обновление 📦</h1>
     <p>Версия 1.3.1 от 16 октября 2025</p>
-
     <div class="changelog">
       <h2>Что нового</h2>
       <ul>
-  <li>🔧 При переключении режимов <b>«карандаш» / «приблизить»</b> больше <b>не появляются всплывающие окна</b>.</li>
-  <li>🔧 Исправлена карточка задачи — теперь <b>вся область карточки кликабельна</b>.</li>
-  <li>🗃️ <b>Корректная архивация старых задач</b>.</li>
-  <li>🖼️ Добавлена <b>индикация загрузки изображения</b> при открытии задачи.</li>
-  <li>🖨️ Новая функция — <b>печать изображения или файла прямо из задачи</b>.</li>
-</ul>
+        <li>🖨️ Новая функция — печать изображения или файла прямо из задачи.</li>
+        <li>🖼️ Добавлена индикация загрузки изображения при открытии задачи.</li>
+        <li>🗃️ Корректная архивация старых задач.</li>
+        <li>🔧 Исправлена карточка задачи — теперь вся область кликабельна.</li>
+        <li>🔧 Исправлено переключение режимов «карандаш / приблизить».</li>
+      </ul>
     </div>
-
-    <a class="download-btn" href="https://apk-download-gamma.vercel.app/app-release.apk" download>
-      ⬇ Скачать APK
-    </a>
-
+    <a class="download-btn" href="https://apk-download-gamma.vercel.app/app-release.apk" download>⬇ Скачать APK</a>
     <footer>MgsINC © 2025</footer>
   </div>
 
-  <!-- Правый блок: история версий под катом -->
-  <div class="versions-panel">
-    <h2 onclick="toggleHistory()">📜 История версий</h2>
-    <div id="history-list" class="collapsed">
-      <div class="old-version">
-        <strong>Версия 1.3 — 12 октября 2025</strong>
-        <ul>
-   <li>🔧 При переключении режимов <b>«карандаш» / «приблизить»</b> больше <b>не появляются всплывающие окна</b>.</li>
-  <li>🔧 Исправлена карточка задачи — теперь <b>вся область карточки кликабельна</b>.</li>
-  <li>🗃️ <b>Корректная архивация старых задач</b>.</li>
-  <li>🖼️ Добавлена <b>индикация загрузки изображения</b> при открытии задачи.</li>
-  <li>🖨️ Новая функция — <b>печать изображения или файла прямо из задачи</b>.</li>
-        </ul>
-      </div>
-      <div class="old-version">
-        <strong>Версия 1.1 — 06 октября 2025</strong>
-        <ul>
-          <li>✅ Внесены изменения в дизайн карточек и фона, а также много мелких визуальных правок.</li>
-        <li>📱 Добавлена поддержка старых версий Android (возможна некорректная работа на некоторых устройствах).</li>
-        <li>⚙️ Добавлены сортировщики задач: теперь при нажатии «Взять в работу» задача закрепляется за кладовщиком, который её взял.</li>
-        <li>🚀 Добавлена функция редактирования изображения в задаче, можно помечать на фото собранные позиции.</li>
-        <li>🚀 Информация о новой версии и ссылке на скачивание теперь приходит каждому пользователю в заданиях.</li>
-        <li>🧹 Мелкие исправления интерфейса и оптимизация кода.</li>
-        </ul>
-      </div>
-      <div class="old-version">
-        <strong>Версия 1 — 1 августа 2025</strong>
-        <ul>
-          <li>🧩 Я родился .</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    function toggleHistory() {
-      const list = document.getElementById("history-list");
-      list.classList.toggle("collapsed");
-    }
-  </script>
-  <!-- === ПАНЕЛЬ УПРАВЛЕНИЯ РЕЛИЗАМИ: Модалка, логика 2 последних, генерация index.html === -->
-<style>
-  /* Карточки релизов */
-  .old-version{margin-bottom:12px;border-top:1px solid rgba(255,255,255,0.2);padding-top:8px;text-align:left;line-height:1.4}
-  .old-version strong{display:block;margin-bottom:6px;color:#ffd1ce}
-  .old-version ul{margin:0 0 6px 18px;padding:0}
-  /* Заголовки секций */
-  .versions-panel h3{font-size:15px;margin:8px 0 10px;color:#ffd1ce;text-align:left;opacity:.95}
-  /* Секции списков */
-  #latest-list{margin-bottom:10px}
-  #history-toggle{font-size:14px;color:#fff;opacity:.85;cursor:pointer;user-select:none;margin:8px 0 6px}
-  #history-toggle::after{content:" ▼";font-size:12px;opacity:.8}
-  #history-list.collapsed{display:none}
-  /* Плавающие кнопки */
-  #addReleaseFloating,#genIndexFloating{
-    position:fixed;left:20px;padding:10px 16px;border:none;border-radius:8px;color:#fff;
-    font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4);z-index:999
-  }
-  #addReleaseFloating{bottom:20px;background:#ff5252}
-  #genIndexFloating{bottom:70px;background:#2e7d32}
-  #addReleaseFloating:hover{background:#b71c1c;transform:translateY(-1px)}
-  #genIndexFloating:hover{background:#1b5e20;transform:translateY(-1px)}
-  /* Модалка */
-  #releaseModal,#exportModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center}
-  .modal-card{background:#222;padding:24px;border-radius:12px;max-width:820px;width:92%;box-shadow:0 4px 20px rgba(0,0,0,.5);color:#fff}
-  .modal-card input,.modal-card textarea{width:100%;margin:5px 0 12px;padding:8px;border-radius:8px;border:1px solid #444;background:#111;color:#fff;box-sizing:border-box}
-  .modal-card .row{display:flex;gap:10px}
-  .modal-card .row>*{flex:1}
-  .actions{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap}
-  .btn-primary{background:#ff5252;border:none;border-radius:8px;color:#fff;padding:10px 14px;font-weight:700;cursor:pointer}
-  .btn-secondary{background:#555;border:none;border-radius:8px;color:#fff;padding:10px 14px;cursor:pointer}
-  .btn-copy{background:#1976d2;border:none;border-radius:8px;color:#fff;padding:10px 14px;font-weight:700;cursor:pointer}
-  #resultArea,#fullIndexArea{width:100%;height:280px}
-  @media (max-width:560px){#genIndexFloating{bottom:78px}#addReleaseFloating{bottom:20px}}
-</style>
-
-<!-- Плавающие кнопки -->
-<button id="genIndexFloating">📄 Сгенерировать index.html</button>
-<button id="addReleaseFloating">➕ Добавить релиз</button>
-
-<!-- Модалка добавления релиза -->
-<div id="releaseModal">
-  <div class="modal-card">
-    <h2 style="margin-top:0;text-align:center;">Добавить релиз</h2>
-    <div class="row">
-      <label>Версия
-        <input id="relVer" placeholder="например, 1.3.2"/>
-      </label>
-      <label>Дата
-        <input id="relDate" placeholder="например, 20 октября 2025"/>
-      </label>
-    </div>
-    <label>Список изменений (по одному пункту на строку):<br/>
-      <textarea id="relNotes" placeholder="🔧 Исправлено то-то...
-🖨️ Добавлена печать...
-..."></textarea>
-    </label>
-    <div class="actions">
-      <button class="btn-primary" id="addAndGenerate">Добавить на страницу и сгенерировать блок</button>
-      <button class="btn-secondary" id="closeModal">Отмена</button>
-    </div>
-    <div id="resultBlock" style="display:none;margin-top:12px;">
-      <p>Скопируй этот HTML-блок релиза (если нужно точечно):</p>
-      <textarea id="resultArea" readonly></textarea>
-    </div>
-  </div>
-</div>
-
-<!-- Модалка экспорта целого index.html -->
-<div id="exportModal">
-  <div class="modal-card">
-    <h2 style="margin-top:0;text-align:center;">Готовый index.html</h2>
-    <p style="opacity:.85">Это полное содержимое страницы со стилями и скриптами (включая этот генератор). Скопируй и замени текущий <code>index.html</code>.</p>
-    <textarea id="fullIndexArea" readonly></textarea>
-    <div class="actions">
-      <button class="btn-copy" id="copyFullIndex">Скопировать</button>
-      <button class="btn-secondary" id="closeExport">Закрыть</button>
-    </div>
-  </div>
-</div>
-
-<script>
-  // ===== ССЫЛКИ НА DOM =====
-  const panel = document.querySelector('.versions-panel');
-  const pageWrap = document.querySelector('.page-wrap');
-  const mainTitle = document.querySelector('.page-wrap h1');
-  const versionP = document.querySelector('.page-wrap p'); // "Версия X от Y"
-  const changelogUL = document.querySelector('.changelog ul');
-  const downloadA = document.querySelector('.download-btn');
-
-  // убедимся, что контейнеры есть
-  (function ensureContainers(){
-    if (!panel) return;
-    if (!panel.querySelector('#history-list')) return; // у тебя уже есть
-    if (!panel.querySelector('#latest-list')) {
-      const latestHdr = document.createElement('h3');
-      latestHdr.textContent = 'Последние релизы';
-      const latest = document.createElement('div'); latest.id = 'latest-list';
-      const toggle = document.createElement('div'); toggle.id = 'history-toggle'; toggle.textContent = 'Остальные';
-      const history = document.getElementById('history-list');
-      history.parentNode.insertBefore(latestHdr, history);
-      history.parentNode.insertBefore(latest, history);
-      history.parentNode.insertBefore(toggle, history);
-    }
-  })();
-
-  const latestList = document.getElementById('latest-list');
-  const historyList = document.getElementById('history-list');
-  const historyToggle = document.getElementById('history-toggle') || panel.querySelector('#history-toggle');
-
-  function reflowLists() {
-    if (!latestList || !historyList) return;
-    const all = [
-      ...latestList.querySelectorAll('.old-version'),
-      ...historyList.querySelectorAll('.old-version')
-    ];
-    latestList.innerHTML = '';
-    historyList.innerHTML = '';
-    all.forEach((node, idx) => (idx < 2 ? latestList : historyList).appendChild(node));
-  }
-
-  (function initReflow(){
-    if (!latestList || !historyList) return;
-    if (latestList.children.length === 0) {
-      const candidates = [...historyList.querySelectorAll('.old-version')].slice(0,2);
-      candidates.forEach(n => latestList.appendChild(n));
-    }
-    reflowLists();
-  })();
-
-  function toggleHistory(){ historyList.classList.toggle('collapsed'); }
-  if (historyToggle) historyToggle.onclick = toggleHistory;
-
-  // ===== МОДАЛКА ДОБАВЛЕНИЯ РЕЛИЗА =====
-  const modal = document.getElementById('releaseModal');
-  const openAddBtn = document.getElementById('addReleaseFloating');
-  const closeAddBtn = document.getElementById('closeModal');
-  const addAndGenBtn = document.getElementById('addAndGenerate');
-  const resultBlock = document.getElementById('resultBlock');
-  const resultArea = document.getElementById('resultArea');
-
-  openAddBtn.onclick = () => {
-    const d = new Date();
-    const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-    const dateStr = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-    const dateInput = document.getElementById('relDate');
-    if (dateInput && !dateInput.value) dateInput.value = dateStr;
-    modal.style.display = 'flex';
-    resultBlock.style.display = 'none';
-    resultArea.value = '';
-  };
-  closeAddBtn.onclick = () => { modal.style.display = 'none'; };
-
-  function makeOldVersionNode(ver, date, notes) {
-    const wrap = document.createElement('div'); wrap.className = 'old-version';
-    const strong = document.createElement('strong'); strong.textContent = `Версия ${ver} — ${date}`;
-    const ul = document.createElement('ul');
-    notes.forEach(n => { const li = document.createElement('li'); li.innerHTML = n; ul.appendChild(li); });
-    wrap.appendChild(strong); wrap.appendChild(ul);
-    return wrap;
-  }
-  function makeOldVersionHTML(ver, date, notes) {
-    return `<div class="old-version">
-  <strong>Версия ${ver} — ${date}</strong>
-  <ul>
-${notes.map(n => `    <li>${n}</li>`).join('\n')}
-  </ul>
-</div>`;
-  }
-
-  addAndGenBtn.onclick = () => {
-    const ver = document.getElementById('relVer').value.trim();
-    const date = document.getElementById('relDate').value.trim();
-    const notes = document.getElementById('relNotes').value.split('\n').map(s=>s.trim()).filter(Boolean);
-    if (!ver || !date || notes.length === 0) { alert('Заполни версию, дату и хотя бы один пункт.'); return; }
-
-    // Добавляем сверху списка последних
-    const node = makeOldVersionNode(ver, date, notes);
-    latestList.insertBefore(node, latestList.firstChild);
-    while (latestList.children.length > 2) {
-      const tail = latestList.lastElementChild;
-      historyList.insertBefore(tail, historyList.firstChild);
-    }
-    // HTML блока релиза
-    resultArea.value = makeOldVersionHTML(ver, date, notes);
-    resultBlock.style.display = 'block';
-  };
-
-  // ===== МОДАЛКА ЭКСПОРТА INDEX =====
-  const exportModal = document.getElementById('exportModal');
-  const genIndexBtn = document.getElementById('genIndexFloating');
-  const closeExportBtn = document.getElementById('closeExport');
-  const fullIndexArea = document.getElementById('fullIndexArea');
-  const copyFullIndexBtn = document.getElementById('copyFullIndex');
-
-  genIndexBtn.onclick = () => {
-    const html = renderFullIndexHTML(collectState());
-    fullIndexArea.value = html;
-    exportModal.style.display = 'flex';
-  };
-  closeExportBtn.onclick = () => exportModal.style.display = 'none';
-  copyFullIndexBtn.onclick = async () => {
-    fullIndexArea.select();
-    try { await navigator.clipboard.writeText(fullIndexArea.value); } catch(e) {}
-  };
-
-  function collectState() {
-    // берём текущее содержимое
-    return {
-      pageTitle: document.title || 'Обновление приложения — Складсборка',
-      h1: mainTitle ? mainTitle.innerHTML : 'Доступно обновление  📦',
-      versionLine: versionP ? versionP.innerHTML : '',
-      changelogList: changelogUL ? changelogUL.innerHTML : '',
-      downloadHref: downloadA ? downloadA.getAttribute('href') : '#',
-      latestHTML: latestList ? latestList.innerHTML : '',
-      historyHTML: historyList ? historyList.innerHTML : '',
-      bg: getComputedStyle(document.body).backgroundImage || ''
-    };
-  }
-
-  function renderFullIndexHTML(state) {
-    // Полный index.html (включая текущую разметку + этот же генератор)
-    // Стили базируются на твоих исходных + служебный CSS сверху.
-    return `<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>${state.pageTitle}</title>
-  <style>
-    body{background-image:${state.bg || 'url("https://img.goodfon.ru/wallpaper/nbig/6/be/priroda-igry-peizazhi-igra-game-landscape-nature-castle-sred.webp")'};background-size:cover;background-position:center;background-repeat:no-repeat;position:relative;min-height:100vh;margin:0;font-family:"Segoe UI",sans-serif;color:#fff;display:flex;flex-direction:column;align-items:center;text-align:center;overflow-y:auto;padding:40px 20px 80px;box-sizing:border-box}
-    body::before{content:"";position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:0}
-    h1,p,a,footer,.changelog,.page-wrap{position:relative;z-index:1}
-    .page-wrap{max-width:720px}
-    h1{color:#ff5252;font-size:28px;margin-bottom:10px}
-    p{color:#ccc;font-size:16px;margin-bottom:30px}
-    .changelog{background:rgba(255,255,255,.1);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:18px 28px;max-width:420px;text-align:left;font-size:15px;color:#eee;line-height:1.5;margin-bottom:35px;box-shadow:0 4px 20px rgba(0,0,0,.3);margin-left:auto;margin-right:auto}
-    .changelog h2{font-size:18px;color:#ff8a80;margin:0 0 10px;text-align:center}
-    .changelog ul{margin:0;padding-left:20px}
-    a.download-btn{background-color:#d32f2f;color:#fff;text-decoration:none;padding:14px 36px;border-radius:10px;font-size:18px;font-weight:600;transition:background .25s,transform .1s;box-shadow:0 0 15px rgba(211,47,47,.4);margin-bottom:40px;display:inline-block}
-    a.download-btn:hover{background-color:#b71c1c;transform:translateY(-2px)}
-    footer{font-size:13px;color:#aaa;z-index:1;margin-top:auto}
-    .versions-panel{position:fixed;right:20px;top:100px;width:280px;max-height:70vh;overflow-y:auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(8px);border-radius:12px;padding:12px 18px;box-shadow:0 4px 20px rgba(0,0,0,.3);color:#fff;font-size:14px;transition:transform .3s ease,opacity .3s ease;z-index:2}
-    .versions-panel h2{font-size:16px;color:#ff8a80;margin:0 0 10px;text-align:center;cursor:pointer;user-select:none}
-    .versions-panel h2::after{content:" ▼";font-size:12px;opacity:.8}
-    #history-list.collapsed{display:none}
-    .old-version{margin-bottom:12px;border-top:1px solid rgba(255,255,255,.2);padding-top:8px;text-align:left;line-height:1.4}
-    .old-version strong{display:block;margin-bottom:6px;color:#ffd1ce}
-    .old-version ul{margin:0 0 6px 18px;padding:0}
-    @media (max-width:980px){.versions-panel{position:static;width:auto;max-width:720px;margin:10px auto 0}.page-wrap{max-width:720px}}
-    /* служебный CSS генератора (минимально) */
-    #latest-list{margin-bottom:10px} #history-toggle{font-size:14px;color:#fff;opacity:.85;cursor:pointer;user-select:none;margin:8px 0 6px}
-    #history-toggle::after{content:" ▼";font-size:12px;opacity:.8}
-  </style>
-</head>
-<body>
-  <div class="page-wrap">
-    <h1>${state.h1}</h1>
-    <p>${state.versionLine}</p>
-    <div class="changelog">
-      <h2>Что нового</h2>
-      <ul>
-${state.changelogList}
-      </ul>
-    </div>
-    <a class="download-btn" href="${state.downloadHref}" download>⬇ Скачать APK</a>
-    <footer>MgsINC © ${new Date().getFullYear()}</footer>
-  </div>
-
+  <!-- Панель версий -->
   <div class="versions-panel">
     <h2 onclick="toggleHistory()">📜 История версий</h2>
     <h3>Последние релизы</h3>
     <div id="latest-list">
-${state.latestHTML}
+      <div class="old-version">
+        <strong>Версия 1.3.1 — 16 октября 2025</strong>
+        <ul><li>🖨️ Новая функция — печать изображения или файла прямо из задачи.</li></ul>
+      </div>
+      <div class="old-version">
+        <strong>Версия 1.3 — 12 октября 2025</strong>
+        <ul><li>🔧 Исправлена карточка задачи — теперь вся область кликабельна.</li></ul>
+      </div>
     </div>
     <div id="history-toggle" onclick="toggleHistory()">Остальные</div>
     <div id="history-list" class="collapsed">
-${state.historyHTML}
+      <div class="old-version">
+        <strong>Версия 1.1 — 6 октября 2025</strong>
+        <ul><li>✅ Внесены изменения в дизайн карточек и фона.</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Кнопки -->
+  <button id="exportBtn">📄 Сгенерировать index.html</button>
+  <button id="addReleaseBtn">➕ Добавить релиз</button>
+
+  <!-- Модалка добавления -->
+  <div class="modal" id="addModal">
+    <div class="modal-card">
+      <h2>Добавить релиз</h2>
+      <label>Версия:</label>
+      <input id="relVer" placeholder="1.3.2" />
+      <label>Дата:</label>
+      <input id="relDate" placeholder="20 октября 2025" />
+      <label>Изменения (по строкам):</label>
+      <textarea id="relNotes"></textarea>
+      <div class="actions">
+        <button class="btn btn-primary" id="saveRelease">Добавить</button>
+        <button class="btn btn-secondary" id="closeAdd">Отмена</button>
+      </div>
+      <div id="resultBlock" style="display:none;">
+        <p>HTML блока релиза:</p>
+        <textarea id="resultArea" readonly></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка экспорта -->
+  <div class="modal" id="exportModal">
+    <div class="modal-card">
+      <h2>Готовый index.html</h2>
+      <textarea id="fullIndexArea" readonly></textarea>
+      <div class="actions">
+        <button class="btn btn-copy" id="copyIndex">Скопировать</button>
+        <button class="btn btn-secondary" id="closeExport">Закрыть</button>
+      </div>
     </div>
   </div>
 
   <script>
-    function toggleHistory(){document.getElementById('history-list').classList.toggle('collapsed');}
+    function $(id){return document.getElementById(id)}
+    function toggleHistory(){ $('history-list').classList.toggle('collapsed') }
+
+    // Открытие / закрытие модалок
+    $('addReleaseBtn').onclick = ()=> $('addModal').style.display='flex'
+    $('closeAdd').onclick = ()=> $('addModal').style.display='none'
+    $('exportBtn').onclick = ()=> {
+      $('fullIndexArea').value = document.documentElement.outerHTML
+      $('exportModal').style.display='flex'
+    }
+    $('closeExport').onclick = ()=> $('exportModal').style.display='none'
+    $('copyIndex').onclick = ()=> {
+      $('fullIndexArea').select(); document.execCommand('copy')
+    }
+
+    // Добавление релиза
+    $('saveRelease').onclick = ()=>{
+      const ver = $('relVer').value.trim()
+      const date = $('relDate').value.trim()
+      const notes = $('relNotes').value.split('\n').filter(x=>x.trim())
+      if(!ver||!date||!notes.length){alert('Заполни все поля!');return}
+
+      const html = `<div class="old-version"><strong>Версия ${ver} — ${date}</strong><ul>${notes.map(n=>`<li>${n}</li>`).join('')}</ul></div>`
+      $('resultBlock').style.display='block'
+      $('resultArea').value = html
+
+      const latest = $('latest-list')
+      const hist = $('history-list')
+      const temp = document.createElement('div')
+      temp.innerHTML = html
+      latest.prepend(temp.firstChild)
+      if(latest.children.length>2){hist.prepend(latest.lastElementChild)}
+    }
   </script>
-
-  <!-- Вставляем обратно этот же генератор (управление релизами и экспорт) -->
-  ${document.currentScript?.outerHTML ?? ''} 
-</body>
-</html>`;
-  }
-</script>
-
 </body>
 </html>
