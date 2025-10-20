@@ -224,43 +224,112 @@
 
 <script>
 (function(){
-  const $ = id => document.getElementById(id);
-  $('year').textContent = new Date().getFullYear();
-  window.toggleHistory = () => $('history-list').classList.toggle('collapsed');
+  // ===== helpers =====
+  const $id = (id) => document.getElementById(id);
+  const qs  = (sel) => document.querySelector(sel);
+  const qsa = (sel) => Array.from(document.querySelectorAll(sel));
 
-  function parseStrong(str){ const m=/^Версия\\s+(.+?)\\s+—\\s+(.+)$/.exec(str.trim()); return m?{ver:m[1],date:m[2]}:{ver:'',date:''}; }
-  function updateMainFromLatest(){
-    const first=$('#latest-list .old-version');
-    if(!first) return;
-    const meta=parseStrong(first.querySelector('strong').textContent);
-    const notes=[...first.querySelectorAll('ul>li')].map(li=>li.innerHTML);
-    const ul=$('mainChangelog');
-    ul.innerHTML='';
-    notes.forEach(n=>{const li=document.createElement('li');li.innerHTML=n;ul.appendChild(li);});
-    if(meta.ver&&meta.date)$('versionLine').textContent=`Версия ${meta.ver} от ${meta.date}`;
+  // год в футере
+  $id('year').textContent = new Date().getFullYear();
+
+  // показать/спрятать историю
+  function toggleHistory(){ $id('history-list').classList.toggle('collapsed'); }
+  window.toggleHistory = toggleHistory;
+
+  // Разбор "Версия X — Дата"
+  function parseStrong(str){
+    const m = /^Версия\s+(.+?)\s+—\s+(.+)$/.exec((str||'').trim());
+    return m ? { ver: m[1], date: m[2] } : { ver: '', date: '' };
   }
 
-  const gear=$('gearBtn'),add=$('addReleaseBtn'),exp=$('exportBtn');
-  let open=false;
-  gear.onclick=()=>{open=!open;[add,exp].forEach(b=>b.classList.toggle('visible',open));document.body.classList.toggle('edit-mode',open);};
+  // Перелить "последний релиз" в главную карточку
+  function updateMainFromLatest(){
+    const first = qs('#latest-list .old-version');
+    if (!first) return;
 
-  const modal=$('addModal'),expModal=$('exportModal');
-  const relVer=$('relVer'),relDate=$('relDate'),relNotes=$('relNotes');
-  const result=$('resultArea'),btnSave=$('saveRelease'),btnDelete=$('deleteRelease');
-  let ctx={mode:'add',node:null};
+    const meta  = parseStrong(first.querySelector('strong')?.textContent || '');
+    const notes = Array.from(first.querySelectorAll('ul > li')).map(li => li.innerHTML);
 
-  $('closeAdd').onclick=()=>modal.style.display='none';
-  $('exportBtn').onclick=()=>{ $('fullIndexArea').value=document.documentElement.outerHTML; expModal.style.display='flex'; };
-  $('closeExport').onclick=()=>expModal.style.display='none';
-  $('copyIndex').onclick=()=>{ $('fullIndexArea').select(); document.execCommand('copy'); };
+    const ul = $id('mainChangelog');
+    if (ul){
+      ul.innerHTML = '';
+      notes.forEach(n => {
+        const li = document.createElement('li');
+        li.innerHTML = n;
+        ul.appendChild(li);
+      });
+    }
+    if (meta.ver && meta.date){
+      $id('versionLine').textContent = `Версия ${meta.ver} от ${meta.date}`;
+    }
+  }
 
-  add.onclick=()=>{const d=new Date();const m=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];relDate.value=`${d.getDate()} ${m[d.getMonth()]} ${d.getFullYear()}`;relVer.value='';relNotes.value='';ctx={mode:'add'};modal.style.display='flex';};
+  // ===== управление (шестерёнка) =====
+  const gear = $id('gearBtn');
+  const addBtn = $id('addReleaseBtn');
+  const expBtn = $id('exportBtn');
+  let opened = false;
 
-  btnSave.onclick=()=>{const v=relVer.value.trim(),d=relDate.value.trim(),n=relNotes.value.split('\\n').filter(Boolean);if(!v||!d||!n.length){alert('Заполни всё');return;}const node=document.createElement('div');node.className='old-version';node.innerHTML=`<strong>Версия ${v} — ${d}</strong><ul>${n.map(x=>`<li>${x}</li>`).join('')}</ul>`;const list=$('#latest-list');list.insertBefore(node,list.firstChild);updateMainFromLatest();result.value=node.outerHTML;};
+  gear.addEventListener('click', () => {
+    opened = !opened;
+    [addBtn, expBtn].forEach(btn => btn.classList.toggle('visible', opened));
+    document.body.classList.toggle('edit-mode', opened);
+  });
 
+  // ===== модалки =====
+  const addModal = $id('addModal');
+  const exportModal = $id('exportModal');
+  const relVer = $id('relVer');
+  const relDate = $id('relDate');
+  const relNotes = $id('relNotes');
+  const resultArea = $id('resultArea');
+  const btnSave = $id('saveRelease');
+  const btnDelete = $id('deleteRelease');
+
+  // закрытия/экспорт
+  $id('closeAdd').onclick   = () => addModal.style.display = 'none';
+  $id('closeExport').onclick= () => exportModal.style.display = 'none';
+  $id('exportBtn').onclick  = () => { $id('fullIndexArea').value = document.documentElement.outerHTML; exportModal.style.display = 'flex'; };
+  $id('copyIndex').onclick  = () => { $id('fullIndexArea').select(); document.execCommand('copy'); };
+
+  // открыть добавление
+  $id('addReleaseBtn').onclick = () => {
+    const d = new Date();
+    const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+    relDate.value = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    relVer.value = '';
+    relNotes.value = '';
+    btnDelete.style.display = 'none';
+    addModal.style.display = 'flex';
+  };
+
+  // сохранить (добавить)
+  btnSave.onclick = () => {
+    const ver = relVer.value.trim();
+    const date = relDate.value.trim();
+    const notes = relNotes.value.split('\n').map(s => s.trim()).filter(Boolean);
+    if (!ver || !date || notes.length === 0){ alert('Заполни версию, дату и хотя бы один пункт.'); return; }
+
+    const node = document.createElement('div');
+    node.className = 'old-version';
+    node.innerHTML = `<strong>Версия ${ver} — ${date}</strong><ul>${notes.map(n => `<li>${n}</li>`).join('')}</ul>`;
+
+    const latest = $id('latest-list');
+    latest.insertBefore(node, latest.firstChild);
+
+    // Переливаем в карточку
+    updateMainFromLatest();
+
+    // Покажем HTML для копипаста
+    resultArea.value = node.outerHTML;
+    // Оставляем модалку открытой, чтобы было удобнее копировать
+  };
+
+  // первичная инициализация
   updateMainFromLatest();
 })();
 </script>
+
 </body>
 </html>
 
