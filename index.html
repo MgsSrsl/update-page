@@ -1,4 +1,6 @@
-<html lang="ru"><head>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Обновление приложения — Складсборка</title>
@@ -35,7 +37,6 @@
     a.download-btn:hover { background-color: #b71c1c; transform: translateY(-2px); }
     footer { font-size: 13px; color: #aaa; z-index: 1; margin-top: auto; }
 
-    /* Панель версий */
     .versions-panel {
       position: fixed; right: 20px; top: 100px; width: 280px; max-height: 70vh; overflow-y: auto;
       background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2); backdrop-filter: blur(8px);
@@ -56,7 +57,6 @@
       .page-wrap { max-width: 720px; }
     }
 
-    /* Кнопки управления */
     #addReleaseBtn, #exportBtn {
       position: fixed; left: 20px; border: none; border-radius: 8px; color: #fff;
       font-weight: 700; font-size: 15px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.4); z-index: 999; padding: 10px 16px;
@@ -66,7 +66,6 @@
     #addReleaseBtn:hover { background:#b71c1c; }
     #exportBtn:hover { background:#1b5e20; }
 
-    /* Шестерёнка + плавное появление */
     #gearBtn {
       position: fixed; left: 20px; bottom: 20px; width: 48px; height: 48px; border-radius: 50%;
       border: none; background: rgba(255,255,255,0.15); color: #fff; font-size: 22px; cursor: pointer; z-index: 1000;
@@ -79,7 +78,6 @@
     }
     #addReleaseBtn.visible, #exportBtn.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
-    /* Модалки */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 1000; align-items: center; justify-content: center; }
     .modal-card { background: #222; padding: 24px; border-radius: 12px; max-width: 600px; width: 92%; box-shadow: 0 4px 20px rgba(0,0,0,.5); color: #fff; }
     input, textarea { width: 100%; margin: 5px 0 12px; padding: 8px; border-radius: 8px; border: 1px solid #444; background: #111; color: #fff; }
@@ -91,10 +89,7 @@
     .btn-danger { background: #b71c1c; }
     textarea#resultArea, textarea#fullIndexArea { height: 220px; }
 
-    /* Режим правки: кнопки на карточках */
-    .ov-tools {
-      position: absolute; top: 6px; right: 0; display: none; gap: 6px;
-    }
+    .ov-tools { position: absolute; top: 6px; right: 0; display: none; gap: 6px; }
     .ov-btn {
       border: 1px solid rgba(255,255,255,.3); background: rgba(0,0,0,.35); color: #fff;
       font-size: 12px; padding: 4px 8px; border-radius: 8px; cursor: pointer;
@@ -102,75 +97,58 @@
     }
     body.edit-mode .old-version:hover .ov-tools { display: inline-flex; }
   </style>
-  <style>.extraClassAspect { -webkit-transform:scaleX(1.33)!important; } .extraClassCrop { -webkit-transform:scale(1.33)!important; }</style>
 </head>
+
 <body>
   <div class="page-wrap">
     <h1 id="mainH1">Доступно обновление 📦</h1>
-    <p id="versionLine">Версия 1.3.1 от 20 октября 2025</p>
+    <p id="versionLine">Версия 1.4 от 20 октября 2025</p>
 
     <div class="changelog">
       <h2>Что нового</h2>
-      <ul id="mainChangelog"><h2>🔥 HotFix </h2>
+      <ul id="mainChangelog"></ul>
+    </div>
 
-<div class="section">
-  <h3>👷 У кладовщика</h3>
-  <ul>
-    <li>🔁 Добавлена кнопка обновления списка задач — в случае проблем с интернетом или автосинхронизацией теперь можно вручную обновить список. Кнопка оснащена индикатором времени последнего обновления.</li>
-    <li>⚠️ Добавлено предупреждение об отсутствии интернет-соединения.</li>
-  </ul>
-</div>
-
-<div class="section">
-  <h3>🧑‍💼 У начальника</h3>
-  <ul>
-    <li>📦 Теперь уведомления о самовывозах приходят автоматически — не нужно включать их вручную.</li>
-  </ul>
-</div>
-<div class="section">
-<h3>💬 У менеджера</h3>
-  <ul>
-    <li>🔔 Добавлены обратные push-уведомления — теперь менеджеры получают оповещения о выполненных задачах (например, возвраты и заказы Яндекс). Это позволяет оперативно отслеживать выполнение и реагировать в реальном времени.</li>
-  </ul>
-</div></div>
-<div class="section">
-  <h3>🌐 У всех пользователей</h3>
-  <ul>
-    <li>🟢 <b>Индикация связи с интернетом:</b></li>
-    <li>При стабильном соединении горит зелёная кнопка с надписью «В сети».</li>
-    <li>При проблемах связи — жёлтая кнопка с надписью «Плохая связь».</li>
-    <li>В этом случае рекомендуется проверить задачи и самовывозы вручную, используя новую кнопку обновления.</li>
-    <li>При полном отсутствии соединения приложение покажет всплывающий баннер с напоминанием, что в «вагончике всегда есть Wi-Fi» — можно подойти для восстановления связи.</li>
-    <li>🖼️ Фото в задаче теперь можно пролистывать (горизонтальный скролл в превью).</li>
-    <li>⏱️ В каждой задаче теперь отображается время создания, взятия в работу и завершения.</li>
-  </ul>
-</div>
-<div class="section">
-  <a class="download-btn" id="downloadA" href="https://apk-download-gamma.vercel.app/app-release.apk" download>⬇ Скачать APK</a>
+    <a class="download-btn" id="downloadA" href="https://apk-download-gamma.vercel.app/app-release.apk" download>⬇ Скачать APK</a>
     <footer>MgsINC © <span id="year">2025</span></footer>
   </div>
 
-  <!-- Панель версий -->
   <div class="versions-panel">
     <h2 onclick="toggleHistory()">📜 История версий</h2>
-
     <h3>Последние релизы</h3>
-    <div id="latest-list"><div class="old-version">
-      <strong>Версия 1.4 — 20 октября 2025</strong>
-      <ul><li>🔥 HotFix — 20.10</li><li>👷 У кладовщика</li><li>🔁 Добавлена кнопка обновления списка задач — в случае проблем с интернетом или автосинхронизацией теперь можно вручную обновить список.</li><li>Кнопка оснащена индикатором времени последнего обновления.</li><li>⚠️ Добавлено предупреждение об отсутствии интернет-соединения.</li><li>🧑‍💼 У начальника</li><li>📦 Теперь уведомления о самовывозах приходят автоматически — не нужно включать их вручную.</li><li>🌐 У всех пользователей</li><li>🟢 Индикация связи с интернетом:</li><li>При стабильном соединении горит зелёная кнопка с надписью «В сети».</li><li>При проблемах связи — жёлтая кнопка с надписью «Плохая связь».</li><li>В этом случае рекомендуется проверить задачи и самовывозы вручную, используя новую кнопку обновления.</li><li>При полном отсутствии соединения приложение покажет всплывающий баннер с напоминанием, что в «вагончике всегда есть Wi-Fi» — можно подойти для восстановления связи.</li><li>🖼️ Фото в задаче теперь можно пролистывать (горизонтальный скролл в превью).</li><li>⏱️ В каждой задаче теперь отображается время создания, взятия в работу и завершения.</li><li>💬 У менеджера</li><li>🔔 Добавлены обратные push-уведомления — теперь менеджеры получают оповещения о выполненных задачах (например, возвраты и заказы Яндекс).</li><li>Это позволяет оперативно отслеживать выполнение и реагировать в реальном времени.</li></ul>
-    </div><div class="old-version">
-      <strong>Версия 1.3.1 — 16 октября 2025</strong>
-      <ul>
-        <li>🖨️ Новая функция — печать изображения или файла прямо из задачи.</li>
-        <li>🖼️ Добавлена индикация загрузки изображения при открытии задачи.</li>
-        <li>🗃️ Корректная архивация старых задач.</li>
-        <li>🔧 Исправлена карточка задачи — теперь вся область кликабельна.</li>
-        <li>🔧 Исправлено переключение режимов «карандаш / приблизить».</li>
-      </ul>
-    </div></div>
+
+    <div id="latest-list">
+      <div class="old-version">
+        <strong>Версия 1.4 — 20 октября 2025</strong>
+        <ul>
+          <li>🔥 HotFix — 20.10</li>
+          <li>👷 У кладовщика</li>
+          <li>🔁 Добавлена кнопка обновления списка задач — можно вручную обновить список при проблемах с интернетом.</li>
+          <li>⚠️ Добавлено предупреждение об отсутствии интернет-соединения.</li>
+          <li>🧑‍💼 У начальника</li>
+          <li>📦 Теперь уведомления о самовывозах приходят автоматически.</li>
+          <li>💬 У менеджера</li>
+          <li>🔔 Обратные push-уведомления о выполненных задачах (например, возвраты и заказы Яндекс).</li>
+          <li>🌐 У всех пользователей</li>
+          <li>🟢 Индикация связи с интернетом (зелёная — в сети, жёлтая — плохая связь, баннер при отсутствии связи ).</li>
+          <li>🖼️ Фото в задаче теперь можно пролистывать (горизонтальный скролл).</li>
+          <li>⏱️ В каждой задаче теперь отображается время создания, взятия в работу и завершения.</li>
+        </ul>
+      </div>
+      <div class="old-version">
+        <strong>Версия 1.3.1 — 16 октября 2025</strong>
+        <ul>
+          <li>🖨️ Печать изображения или файла прямо из задачи.</li>
+          <li>🖼️ Индикация загрузки изображения при открытии задачи.</li>
+          <li>🗃️ Корректная архивация старых задач.</li>
+          <li>🔧 Исправлена кликабельность карточки задачи.</li>
+          <li>🔧 Исправлено переключение режимов «карандаш / приблизить».</li>
+        </ul>
+      </div>
+    </div>
 
     <div id="history-toggle" onclick="toggleHistory()">Остальные</div>
-    <div id="history-list" class="">
+    <div id="history-list" class="collapsed">
       <div class="old-version">
         <strong>Версия 1.3 — 12 октября 2025</strong>
         <ul>
@@ -182,7 +160,7 @@
       <div class="old-version">
         <strong>Версия 1.1 — 6 октября 2025</strong>
         <ul>
-          <li>✅ Внесены изменения в дизайн карточек и фона.</li>
+          <li>✅ Обновлён дизайн карточек и фона.</li>
           <li>📱 Добавлена поддержка старых версий Android.</li>
         </ul>
       </div>
@@ -193,36 +171,31 @@
     </div>
   </div>
 
-  <!-- Кнопки -->
   <button id="gearBtn" title="Управление релизами">⚙️</button>
   <button id="exportBtn" class="hidden">📄 Сгенерировать index.html</button>
   <button id="addReleaseBtn" class="hidden">➕ Добавить релиз</button>
 
-  <!-- Модалка добавления/редактирования -->
-  <div class="modal" id="addModal" style="display: none;">
+  <div class="modal" id="addModal">
     <div class="modal-card">
       <h2 id="addModalTitle">Добавить релиз</h2>
       <label>Версия:</label>
-      <input id="relVer" placeholder="1.3.2">
+      <input id="relVer" placeholder="1.4.1">
       <label>Дата:</label>
       <input id="relDate" placeholder="20 октября 2025">
       <label>Изменения (по строкам):</label>
-      <textarea id="relNotes" placeholder="🔧 Исправлено ...
-🖨️ Добавлена печать ...
-..."></textarea>
-      <div class="actions" id="editActionsRow">
+      <textarea id="relNotes" placeholder="🔧 Исправлено ..."></textarea>
+      <div class="actions">
         <button class="btn btn-primary" id="saveRelease">Сохранить</button>
         <button class="btn btn-danger" id="deleteRelease" style="display:none;">Удалить релиз</button>
         <button class="btn btn-secondary" id="closeAdd">Отмена</button>
       </div>
-      <div id="resultBlock" style="display: block;">
+      <div id="resultBlock" style="display:block;">
         <p>HTML блока релиза:</p>
         <textarea id="resultArea" readonly></textarea>
       </div>
     </div>
   </div>
 
-  <!-- Модалка экспорта -->
   <div class="modal" id="exportModal">
     <div class="modal-card">
       <h2>Готовый index.html</h2>
@@ -236,238 +209,43 @@
 
 <script>
 (function(){
-  const $ = (id) => document.getElementById(id);
-
-  // год в футере
+  const $ = id => document.getElementById(id);
   $('year').textContent = new Date().getFullYear();
+  window.toggleHistory = () => $('history-list').classList.toggle('collapsed');
 
-  function toggleHistory(){ $('history-list').classList.toggle('collapsed'); }
-  window.toggleHistory = toggleHistory;
-
-  // ===== helpers =====
-  function makeOldVersionNode(ver, date, notes) {
-    const wrap = document.createElement('div'); wrap.className = 'old-version';
-    const strong = document.createElement('strong'); strong.textContent = `Версия ${ver} — ${date}`;
-    const ul = document.createElement('ul');
-    notes.forEach(n => { const li = document.createElement('li'); li.innerHTML = n; ul.appendChild(li); });
-    wrap.appendChild(strong); wrap.appendChild(ul);
-    addOvTools(wrap);
-    return wrap;
-  }
-  function makeOldVersionHTML(ver, date, notes) {
-    return `<div class="old-version">
-  <strong>Версия ${ver} — ${date}</strong>
-  <ul>
-${notes.map(n => `    <li>${n}</li>`).join('\\n')}
-  </ul>
-</div>`;
-  }
-  function parseStrong(str) {
-    const m = /^Версия\\s+(.+?)\\s+—\\s+(.+)$/.exec(str.trim());
-    return m ? { ver: m[1], date: m[2] } : { ver: '', date: '' };
-  }
-  function reflowLists() {
-    const latest = $('latest-list'), history = $('history-list');
-    if (!latest || !history) return;
-    const all = [...latest.querySelectorAll('.old-version'), ...history.querySelectorAll('.old-version')];
-    latest.innerHTML = ''; history.innerHTML = '';
-    all.forEach((node, i) => (i < 2 ? latest : history).appendChild(node));
-  }
-  function updateMainFromLatest() {
-    const latest = $('latest-list');
-    const first = latest?.querySelector('.old-version');
-    if (!first) return;
-    const meta = parseStrong(first.querySelector('strong')?.textContent || '');
-    const notes = [...first.querySelectorAll('ul > li')].map(li => li.innerHTML);
-    const ul = $('mainChangelog');
-    if (ul) {
-      ul.innerHTML = '';
-      notes.forEach(n => { const li = document.createElement('li'); li.innerHTML = n; ul.appendChild(li); });
-    }
-    if (meta.ver && meta.date) $('versionLine').textContent = `Версия ${meta.ver} от ${meta.date}`;
+  function parseStrong(str){ const m=/^Версия\\s+(.+?)\\s+—\\s+(.+)$/.exec(str.trim()); return m?{ver:m[1],date:m[2]}:{ver:'',date:''}; }
+  function updateMainFromLatest(){
+    const first=$('#latest-list .old-version');
+    if(!first) return;
+    const meta=parseStrong(first.querySelector('strong').textContent);
+    const notes=[...first.querySelectorAll('ul>li')].map(li=>li.innerHTML);
+    const ul=$('mainChangelog');
+    ul.innerHTML='';
+    notes.forEach(n=>{const li=document.createElement('li');li.innerHTML=n;ul.appendChild(li);});
+    if(meta.ver&&meta.date)$('versionLine').textContent=`Версия ${meta.ver} от ${meta.date}`;
   }
 
-  // ===== управление (шестерёнка) =====
-  const gear = $('gearBtn');
-  const addBtn = $('addReleaseBtn');
-  const expBtn = $('exportBtn');
-  let opened = false;
+  const gear=$('gearBtn'),add=$('addReleaseBtn'),exp=$('exportBtn');
+  let open=false;
+  gear.onclick=()=>{open=!open;[add,exp].forEach(b=>b.classList.toggle('visible',open));document.body.classList.toggle('edit-mode',open);};
 
-  gear.addEventListener('click', () => {
-    opened = !opened;
-    [addBtn, expBtn].forEach(btn => btn.classList.toggle('visible', opened));
-    document.body.classList.toggle('edit-mode', opened);
-    ensureToolsOnAll();
-  });
+  const modal=$('addModal'),expModal=$('exportModal');
+  const relVer=$('relVer'),relDate=$('relDate'),relNotes=$('relNotes');
+  const result=$('resultArea'),btnSave=$('saveRelease'),btnDelete=$('deleteRelease');
+  let ctx={mode:'add',node:null};
 
-  // ===== модалки =====
-  const addModal = $('addModal');
-  const exportModal = $('exportModal');
-  const relVer = $('relVer');
-  const relDate = $('relDate');
-  const relNotes = $('relNotes');
-  const resultBlock = $('resultBlock');
-  const resultArea = $('resultArea');
-  const addModalTitle = $('addModalTitle');
-  const btnSave = $('saveRelease');
-  const btnDelete = $('deleteRelease');
+  $('closeAdd').onclick=()=>modal.style.display='none';
+  $('exportBtn').onclick=()=>{ $('fullIndexArea').value=document.documentElement.outerHTML; expModal.style.display='flex'; };
+  $('closeExport').onclick=()=>expModal.style.display='none';
+  $('copyIndex').onclick=()=>{ $('fullIndexArea').select(); document.execCommand('copy'); };
 
-  let editContext = { mode: 'add', node: null, parentListId: null };
+  add.onclick=()=>{const d=new Date();const m=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];relDate.value=`${d.getDate()} ${m[d.getMonth()]} ${d.getFullYear()}`;relVer.value='';relNotes.value='';ctx={mode:'add'};modal.style.display='flex';};
 
-  // Открыть добавление
-  addBtn.addEventListener('click', () => {
-    prepareAddForm();
-    addModal.style.display = 'flex';
-  });
+  btnSave.onclick=()=>{const v=relVer.value.trim(),d=relDate.value.trim(),n=relNotes.value.split('\\n').filter(Boolean);if(!v||!d||!n.length){alert('Заполни всё');return;}const node=document.createElement('div');node.className='old-version';node.innerHTML=`<strong>Версия ${v} — ${d}</strong><ul>${n.map(x=>`<li>${x}</li>`).join('')}</ul>`;const list=$('#latest-list');list.insertBefore(node,list.firstChild);updateMainFromLatest();result.value=node.outerHTML;};
 
-  function prepareAddForm() {
-    const d = new Date();
-    const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-    const str = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-    if (!relDate.value) relDate.value = str;
-
-    addModalTitle.textContent = 'Добавить релиз';
-    btnDelete.style.display = 'none';
-    resultBlock.style.display = 'block';
-
-    relVer.value = '';
-    relDate.value = str;
-    relNotes.value = '';
-    editContext = { mode: 'add', node: null, parentListId: null };
-  }
-
-  // Закрыть модалки
-  $('closeAdd').addEventListener('click', () => addModal.style.display = 'none');
-  $('exportBtn').addEventListener('click', () => {
-    $('fullIndexArea').value = document.documentElement.outerHTML;
-    exportModal.style.display = 'flex';
-  });
-  $('closeExport').addEventListener('click', () => exportModal.style.display = 'none');
-  $('copyIndex').addEventListener('click', () => {
-    $('fullIndexArea').select();
-    document.execCommand('copy');
-  });
-
-  // Сохранить (добавить/редактировать)
-  btnSave.addEventListener('click', () => {
-    const ver = relVer.value.trim();
-    const date = relDate.value.trim();
-    const notes = relNotes.value.split('\\n').map(s => s.trim()).filter(Boolean);
-    if (!ver || !date || notes.length === 0) { alert('Заполни версию, дату и хотя бы один пункт.'); return; }
-
-    if (editContext.mode === 'add') {
-      const latest = $('latest-list'), history = $('history-list');
-      if (!latest || !history) return;
-      const node = makeOldVersionNode(ver, date, notes);
-      latest.insertBefore(node, latest.firstChild);
-      while (latest.children.length > 2) {
-        history.insertBefore(latest.lastElementChild, history.firstChild);
-      }
-      updateMainFromLatest();
-      resultArea.value = makeOldVersionHTML(ver, date, notes);
-      resultBlock.style.display = 'block';
-      // Не закрываем — удобно копировать HTML. Если нужно — раскомментируй следующую строку:
-      // addModal.style.display = 'none';
-    } else {
-      // Редактирование существующего
-      const node = editContext.node;
-      if (!node) return;
-      const strong = node.querySelector('strong');
-      const ul = node.querySelector('ul');
-      if (strong) strong.textContent = `Версия ${ver} — ${date}`;
-      if (ul) {
-        ul.innerHTML = '';
-        notes.forEach(n => { const li = document.createElement('li'); li.innerHTML = n; ul.appendChild(li); });
-      }
-      updateMainFromLatest();
-      // В режиме редактирования HTML-превью можно тоже показать:
-      resultArea.value = makeOldVersionHTML(ver, date, notes);
-      resultBlock.style.display = 'block';
-      // Оставляем модалку открытой для копипаста
-    }
-  });
-
-  // Удалить релиз
-  btnDelete.addEventListener('click', () => {
-    if (editContext.mode !== 'edit' || !editContext.node) return;
-    if (!confirm('Удалить этот релиз?')) return;
-    const toRemove = editContext.node;
-    const parent = toRemove.parentElement;
-    toRemove.remove();
-    addModal.style.display = 'none';
-    // После удаления можно перетечь одну карточку из истории в последние, если нужно
-    const latest = $('latest-list'), history = $('history-list');
-    if (latest && history) {
-      while (latest.children.length < 2 && history.firstElementChild) {
-        latest.appendChild(history.firstElementChild);
-      }
-    }
-    updateMainFromLatest();
-  });
-
-  // ===== инструменты на карточках (Править/Удалить) =====
-  function addOvTools(node) {
-    if (node.querySelector('.ov-tools')) return; // уже есть
-    const tools = document.createElement('div');
-    tools.className = 'ov-tools';
-    const editBtn = document.createElement('button');
-    editBtn.className = 'ov-btn'; editBtn.textContent = '✏️ Править';
-    editBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openEditFor(node);
-    });
-    const delBtn = document.createElement('button');
-    delBtn.className = 'ov-btn'; delBtn.textContent = '🗑 Удалить';
-    delBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openDeleteFor(node);
-    });
-    tools.appendChild(editBtn);
-    tools.appendChild(delBtn);
-    node.appendChild(tools);
-  }
-
-  function ensureToolsOnAll() {
-    document.querySelectorAll('#latest-list .old-version, #history-list .old-version')
-      .forEach(addOvTools);
-  }
-
-  function openEditFor(node) {
-    // Прочитать текущие данные
-    const meta = parseStrong(node.querySelector('strong')?.textContent || '');
-    const notes = [...node.querySelectorAll('ul > li')].map(li => li.innerHTML);
-
-    addModalTitle.textContent = 'Редактировать релиз';
-    btnDelete.style.display = 'inline-block';
-    resultBlock.style.display = 'block';
-
-    relVer.value = meta.ver || '';
-    relDate.value = meta.date || '';
-    relNotes.value = notes.join('\\n');
-
-    editContext = { mode: 'edit', node, parentListId: node.parentElement?.id || null };
-    addModal.style.display = 'flex';
-  }
-
-  function openDeleteFor(node) {
-    // Просто откроем модалку в режиме редактирования с активной кнопкой удаления
-    openEditFor(node);
-  }
-
-  // ==== первичная инициализация ====
-  reflowLists();
-  ensureToolsOnAll();
   updateMainFromLatest();
-
-  // Экспорт текущего HTML
-  $('exportBtn').addEventListener('click', () => {
-    $('fullIndexArea').value = document.documentElement.outerHTML;
-    exportModal.style.display = 'flex';
-  });
-
 })();
 </script>
-</body></html>
+</body>
+</html>
 
-
-</body></html>
