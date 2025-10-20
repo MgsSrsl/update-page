@@ -2,304 +2,386 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Обновление приложения — Складсборка</title>
   <style>
-    :root {
-      --glass-bg: rgba(255, 255, 255, 0.1);
-      --glass-stroke: rgba(255, 255, 255, 0.2);
+    :root{
+      --glass-bg: rgba(255,255,255,0.1);
+      --glass-stroke: rgba(255,255,255,0.2);
       --blur: 6px;
       --shadow: 0 4px 20px rgba(0,0,0,0.3);
       --accent: #ff5252;
       --accent-soft: #ff8a80;
-      --text: #eee;
-      --muted: #ccc;
+      --text: #eee; --muted: #ccc;
     }
+    *{box-sizing:border-box}
+    body{
+      background-image:url("https://img.goodfon.ru/wallpaper/nbig/6/be/priroda-igry-peizazhi-igra-game-landscape-nature-castle-sred.webp");
+      background-size:cover;background-position:center;background-repeat:no-repeat;
+      min-height:100vh;margin:0;font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;color:#fff;
+      display:flex;flex-direction:column;align-items:center;text-align:center;overflow-y:auto;padding:40px 20px 80px;
+    }
+    body::before{content:"";position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:0}
+    h1,p,a,footer,.changelog,.page-wrap,.versions-panel,.admin-panel{position:relative;z-index:1}
+    .page-wrap{max-width:720px;width:100%}
+    h1{color:var(--accent);font-size:28px;margin:0 0 10px}
+    p{color:var(--muted);font-size:16px;margin:0 0 30px}
+    .changelog{
+      background:var(--glass-bg);backdrop-filter:blur(var(--blur));border:1px solid var(--glass-stroke);
+      border-radius:12px;padding:18px 28px;max-width:720px;text-align:left;font-size:15px;color:var(--text);
+      line-height:1.55;margin:0 auto 35px;box-shadow:var(--shadow)
+    }
+    .changelog h2{font-size:18px;color:var(--accent-soft);margin:0 0 12px;text-align:center}
+    .list{list-style:none;margin:0;padding:0}
+    .list>li{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);border-radius:10px;padding:12px 14px;margin:10px 0}
+    .title{font-weight:700;display:inline-block;margin-bottom:6px}
+    .sub{margin:6px 0 0 0;padding-left:18px}.sub li{margin:4px 0}
+    a.download-btn{
+      background:#d32f2f;color:#fff;text-decoration:none;padding:14px 36px;border-radius:10px;
+      font-size:18px;font-weight:600;transition:background .25s,transform .1s;box-shadow:0 0 15px rgba(211,47,47,.4);
+      margin:10px auto 40px;display:inline-block
+    }
+    a.download-btn:hover{background:#b71c1c;transform:translateY(-2px)}
+    footer{font-size:13px;color:#aaa;margin-top:auto}
 
-    * { box-sizing: border-box; }
+    /* История версий */
+    .versions-panel{
+      position:fixed;right:20px;top:100px;width:320px;max-height:70vh;overflow-y:auto;background:rgba(255,255,255,0.08);
+      border:1px solid var(--glass-stroke);backdrop-filter:blur(8px);border-radius:12px;padding:12px 18px;box-shadow:var(--shadow);
+      color:#fff;font-size:14px;z-index:2;text-align:left
+    }
+    .versions-panel h2{font-size:16px;color:var(--accent-soft);margin:0 0 10px;text-align:center;cursor:pointer;user-select:none}
+    .versions-panel h2::after{content:" ▼";font-size:12px;opacity:.8}
+    #history-list.collapsed{display:none}
+    .old-version{margin:0 0 14px;border-top:1px solid rgba(255,255,255,.2);padding-top:10px;line-height:1.42}
+    .old-version strong{display:block;margin-bottom:6px;color:#ffd1ce}
+    .old-version ul{margin:6px 0 0 18px;padding:0}
 
-    body {
-      background-image: url("https://img.goodfon.ru/wallpaper/nbig/6/be/priroda-igry-peizazhi-igra-game-landscape-nature-castle-sred.webp");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      min-height: 100vh;
-      margin: 0;
-      font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      overflow-y: auto;
-      padding: 40px 20px 80px;
+    /* Админ-панель */
+    .gear{position:fixed;right:20px;bottom:20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+      width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+      backdrop-filter:blur(6px);cursor:pointer;box-shadow:var(--shadow);z-index:3}
+    .gear:hover{background:rgba(255,255,255,.18)}
+    .admin-panel{
+      position:fixed;right:20px;bottom:88px;width:360px;max-width:92vw;background:rgba(0,0,0,.65);
+      border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:14px 14px 16px;box-shadow:var(--shadow);display:none
     }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      z-index: 0;
+    .admin-panel h3{margin:0 0 8px 0;font-size:16px;color:#fff}
+    .admin-panel label{display:block;font-size:13px;color:#eee;margin:8px 0 4px}
+    .admin-panel input,.admin-panel textarea,.admin-panel select{
+      width:100%;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;
+      padding:10px 12px;font-size:14px
     }
-
-    h1, p, a, footer, .changelog, .page-wrap, .versions-panel {
-      position: relative;
-      z-index: 1;
+    .row{display:flex;gap:8px}
+    .row>*{flex:1}
+    .admin-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+    .btn{
+      background:#ff5252;border:none;color:#fff;padding:10px 14px;border-radius:9px;cursor:pointer;font-weight:600
     }
-
-    .page-wrap { max-width: 720px; width: 100%; }
-
-    h1 {
-      color: var(--accent);
-      font-size: 28px;
-      margin: 0 0 10px;
-    }
-
-    p {
-      color: var(--muted);
-      font-size: 16px;
-      margin: 0 0 30px;
-    }
-
-    .changelog {
-      background: var(--glass-bg);
-      backdrop-filter: blur(var(--blur));
-      border: 1px solid var(--glass-stroke);
-      border-radius: 12px;
-      padding: 18px 28px;
-      max-width: 720px;
-      text-align: left;
-      font-size: 15px;
-      color: var(--text);
-      line-height: 1.55;
-      margin: 0 auto 35px;
-      box-shadow: var(--shadow);
-    }
-
-    .changelog h2 {
-      font-size: 18px;
-      color: var(--accent-soft);
-      margin: 0 0 12px;
-      text-align: center;
-    }
-
-    .list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .list > li {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.16);
-      border-radius: 10px;
-      padding: 12px 14px;
-      margin: 10px 0;
-    }
-
-    .list .title {
-      font-weight: 700;
-      display: inline-block;
-      margin-bottom: 6px;
-    }
-
-    .list .sub {
-      margin: 6px 0 0 0;
-      padding-left: 18px;
-    }
-
-    .list .sub li { margin: 4px 0; }
-
-    a.download-btn {
-      background-color: #d32f2f;
-      color: #fff;
-      text-decoration: none;
-      padding: 14px 36px;
-      border-radius: 10px;
-      font-size: 18px;
-      font-weight: 600;
-      transition: background 0.25s, transform 0.1s;
-      box-shadow: 0 0 15px rgba(211, 47, 47, 0.4);
-      margin: 10px auto 40px;
-      display: inline-block;
-    }
-
-    a.download-btn:hover {
-      background-color: #b71c1c;
-      transform: translateY(-2px);
-    }
-
-    footer {
-      font-size: 13px;
-      color: #aaa;
-      margin-top: auto;
-    }
-
-    /* ====== ПАНЕЛЬ ИСТОРИИ ВЕРСИЙ ====== */
-    .versions-panel {
-      position: fixed;
-      right: 20px;
-      top: 100px;
-      width: 320px;
-      max-height: 70vh;
-      overflow-y: auto;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid var(--glass-stroke);
-      backdrop-filter: blur(8px);
-      border-radius: 12px;
-      padding: 12px 18px;
-      box-shadow: var(--shadow);
-      color: #fff;
-      font-size: 14px;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-      z-index: 2;
-      text-align: left;
-    }
-    .versions-panel h2 {
-      font-size: 16px;
-      color: var(--accent-soft);
-      margin: 0 0 10px;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
-    }
-    .versions-panel h2::after {
-      content: " ▼";
-      font-size: 12px;
-      opacity: 0.8;
-    }
-    #history-list.collapsed { display: none; }
-    .old-version {
-      margin: 0 0 14px;
-      border-top: 1px solid rgba(255,255,255,0.2);
-      padding-top: 10px;
-      line-height: 1.42;
-    }
-    .old-version strong {
-      display: block;
-      margin-bottom: 6px;
-      color: #ffd1ce;
-    }
-    .old-version ul {
-      margin: 6px 0 0 18px;
-      padding: 0;
-    }
-
-    @media (max-width: 980px) {
-      .versions-panel {
-        position: static;
-        width: auto;
-        max-width: 720px;
-        margin: 10px auto 0;
-      }
-      .page-wrap { max-width: 720px; }
+    .btn.secondary{background:rgba(255,255,255,.14)}
+    .small{font-size:12px;color:#ccc;margin-top:4px}
+    .inline{display:inline-block}
+    @media (max-width:980px){
+      .versions-panel{position:static;width:auto;max-width:720px;margin:10px auto 0}
+      .page-wrap{max-width:720px}
     }
   </style>
 </head>
 <body>
   <div class="page-wrap">
-    <h1>Доступно обновление 📦</h1>
-    <p>Версия 1.3.1 от 20 октября 2025</p>
+    <h1 id="page-title">Доступно обновление 📦</h1>
+    <p id="page-subtitle">Версия —</p>
 
-    <div class="changelog">
+    <div class="changelog" id="changelog">
       <h2>Что нового</h2>
-      <ul class="list">
-        <li>
-          <span class="title">🆕 Версия 1.3.1 — Hotfix</span>
-          <ul class="sub">
-            <li>🔧 При переключении режимов <b>«карандаш» / «приблизить»</b> всплывающие окна <b>больше не появляются</b>.</li>
-            <li>🔧 Исправлена карточка задачи — теперь <b>кликабельна вся область</b>.</li>
-            <li>🗃️ <b>Корректная архивация</b> старых задач.</li>
-            <li>🖼️ Добавлена <b>индикация загрузки изображения</b> при открытии задачи.</li>
-            <li>🖨️ <b>Новая функция:</b> печать изображения/файла прямо из задачи.</li>
-          </ul>
-        </li>
-
-        <li>
-          <span class="title">🔧 Версия 1.2 — обновление функционала</span>
-          <ul class="sub">
-            <li>📢 При появлении новой версии — <b>верхний баннер</b> с кнопкой «Обновить». Если основная кнопка недоступна, есть <b>запасная</b> — ведёт на страницу обновления.</li>
-            <li>📷 В создании задачи добавлена кнопка <b>«Сделать фото»</b>.</li>
-            <li>📲 Исправлены push-уведомления — при нажатии открывается <b>нужная задача</b>.</li>
-            <li>🗄️ <b>Архивация и очистка</b> выполненных задач (режим <i>Начальник</i>).</li>
-            <li>🔢 На главном экране кладовщика под кнопками отображается <b>количество задач</b> — видно без перехода в раздел.</li>
-            <li>🚪 Кнопка <b>«Выход»</b> аккуратно перенесена в нижнюю часть главного экрана.</li>
-          </ul>
-        </li>
-      </ul>
+      <ul class="list" id="main-list"><!-- рендер свежих релизов --></ul>
     </div>
 
-    <a class="download-btn" href="https://apk-download-gamma.vercel.app/app-release.apk" download>
+    <a class="download-btn" id="download-link" href="https://apk-download-gamma.vercel.app/app-release.apk" download>
       ⬇ Скачать APK
     </a>
 
-    <footer>MgsINC © 2025</footer>
+    <footer>MgsINC © <span id="year"></span></footer>
   </div>
 
-  <!-- Правый блок: история версий под катом -->
+  <!-- История -->
   <aside class="versions-panel">
     <h2 onclick="toggleHistory()">📜 История версий</h2>
-    <div id="history-list" class="collapsed">
-      <div class="old-version">
-        <strong>20.10 — HotFix</strong>
-        <ul>
-          <li>
-            👷‍♂️ <b>Для кладовщика</b><br>
-            ➕ Кнопка <i>«Обновить список задач»</i> для ручного обновления при проблемах с интернетом/автообновлением.<br>
-            ⏱️ Индикатор времени последнего обновления.<br>
-            ⚠️ Предупреждение об отсутствии подключения.
-          </li>
-          <li>
-            👨‍💼 <b>Для начальника</b><br>
-            📲 Уведомления о <b>самовывозах</b> приходят автоматически.
-          </li>
-          <li>
-            🌐 <b>Для всех</b><br>
-            Индикация соединения:
-            <ul>
-              <li>🟢 «В сети» — зелёная кнопка.</li>
-              <li>🟡 «Плохая связь» — жёлтая кнопка.</li>
-            </ul>
-            📡 При плохой связи — вручную обновляйте списки новой кнопкой.<br>
-            🚫 При отсутствии интернета появится баннер (в вагончике есть Wi-Fi).
-          </li>
-          <li>🖼️ Пролистывание фотографий в превью задач.</li>
-          <li>⏰ В карточке видно <b>время создания / начала / завершения</b>.</li>
-          <li>
-            💼 <b>Для менеджера</b><br>
-            🔔 <b>Обратные push-уведомления</b> о выполненных задачах (в т.ч. возвратах) — оповещения приходят оперативно.
-          </li>
-        </ul>
-      </div>
-
-      <div class="old-version">
-        <strong>Версия 1.1 — 06 октября 2025</strong>
-        <ul>
-          <li>✅ Обновления дизайна карточек и фона, множество мелких правок.</li>
-          <li>📱 Поддержка старых версий Android (на части устройств возможны нюансы).</li>
-          <li>⚙️ Сортировщики задач: «Взять в работу» закрепляет задачу за кладовщиком.</li>
-          <li>🧰 Редактирование изображения в задаче (отмечать собранные позиции прямо на фото).</li>
-          <li>🚀 Уведомление о новой версии и ссылка на скачивание приходят в заданиях.</li>
-          <li>🧹 Оптимизация кода и мелкие исправления.</li>
-        </ul>
-      </div>
-
-      <div class="old-version">
-        <strong>Версия 1 — 1 августа 2025</strong>
-        <ul>
-          <li>🧩 Первая публичная версия.</li>
-        </ul>
-      </div>
-    </div>
+    <div id="history-list" class="collapsed"><!-- рендер старых релизов --></div>
   </aside>
 
+  <!-- Кнопка и панель администратора -->
+  <button class="gear" id="gear" title="Открыть панель">⚙️</button>
+  <div class="admin-panel" id="admin">
+    <h3>Добавить релиз</h3>
+    <div class="row">
+      <div>
+        <label>Версия</label>
+        <input id="v-version" placeholder="например, 1.3.1" />
+      </div>
+      <div>
+        <label>Дата</label>
+        <input id="v-date" type="date" />
+      </div>
+    </div>
+    <label>Заголовок/тип (например: Hotfix, Обновление функционала)</label>
+    <input id="v-title" placeholder="Hotfix / Обновление функционала" />
+
+    <label>Пункты (по одному на строку)</label>
+    <textarea id="v-items" rows="6" placeholder="🔧 Исправлено...\n🖨️ Новая функция — печать..."></textarea>
+
+    <div class="row">
+      <div>
+        <label>Свежих релизов на главной</label>
+        <select id="v-on-main">
+          <option value="1">1</option><option value="2" selected>2</option>
+          <option value="3">3</option><option value="4">4</option>
+        </select>
+      </div>
+      <div>
+        <label>Ссылка на APK (необязательно)</label>
+        <input id="v-apk" placeholder="https://..." />
+      </div>
+    </div>
+
+    <div class="admin-actions">
+      <button class="btn" id="publish">📝 Опубликовать</button>
+      <button class="btn secondary" id="copy-main">📋 Скопировать HTML «Что нового»</button>
+      <button class="btn secondary" id="copy-history">📋 Скопировать HTML «История»</button>
+      <button class="btn secondary" id="export">⬇️ Экспорт JSON</button>
+      <button class="btn secondary" id="import">⬆️ Импорт JSON</button>
+      <button class="btn secondary" id="reset">🗑 Сбросить (очистить всё)</button>
+    </div>
+    <div class="small">Данные хранятся локально в браузере (localStorage). На Vercel ничего дополнительно не нужно.</div>
+  </div>
+
   <script>
-    function toggleHistory() {
-      const list = document.getElementById("history-list");
-      list.classList.toggle("collapsed");
+    // ====== МОДЕЛЬ ДАННЫХ ======
+    const STORAGE_KEY = "skladsborka_changelog_v1";
+    const DEFAULT_SHOW_ON_MAIN = 2;
+
+    function todayISO(){
+      const d = new Date();
+      const tzOffset = d.getTimezoneOffset()*60000;
+      return new Date(d - tzOffset).toISOString().slice(0,10);
     }
+
+    const state = loadState() || seedInitial();
+
+    function seedInitial(){
+      // Начальная структура — можно сразу заменить твоими релизами.
+      return {
+        showOnMain: 2,
+        apkUrl: "https://apk-download-gamma.vercel.app/app-release.apk",
+        releases: [
+          {
+            version: "1.3.1",
+            date: "2025-10-20",
+            title: "Hotfix",
+            items: [
+              "🔧 При переключении режимов <b>«карандаш» / «приблизить»</b> всплывающие окна <b>больше не появляются</b>.",
+              "🔧 Исправлена карточка задачи — теперь <b>кликабельна вся область</b>.",
+              "🗃️ <b>Корректная архивация</b> старых задач.",
+              "🖼️ Добавлена <b>индикация загрузки изображения</b> при открытии задачи.",
+              "🖨️ <b>Новая функция:</b> печать изображения/файла прямо из задачи."
+            ]
+          },
+          {
+            version: "1.2",
+            date: "2025-10-12",
+            title: "Обновление функционала",
+            items: [
+              "📢 При появлении новой версии — <b>верхний баннер</b> с кнопкой «Обновить». Если основная кнопка недоступна, есть <b>запасная</b> — ведёт на страницу обновления.",
+              "📷 В создании задачи добавлена кнопка <b>«Сделать фото»</b>.",
+              "📲 Исправлены push-уведомления — при нажатии открывается <b>нужная задача</b>.",
+              "🗄️ <b>Архивация и очистка</b> выполненных задач (режим <i>Начальник</i>).",
+              "🔢 На главном экране кладовщика под кнопками отображается <b>количество задач</b> — видно без перехода в раздел.",
+              "🚪 Кнопка <b>«Выход»</b> аккуратно перенесена в нижнюю часть главного экрана."
+            ]
+          },
+          {
+            version: "20.10",
+            date: "2025-10-10",
+            title: "HotFix",
+            items: [
+              "👷‍♂️ <b>Для кладовщика:</b> кнопка «Обновить список задач», ⏱️ индикатор времени, ⚠️ предупреждение об отсутствии сети.",
+              "👨‍💼 <b>Для начальника:</b> автоматические уведомления о самовывозах.",
+              "🌐 <b>Для всех:</b> индикация соединения — 🟢 «В сети», 🟡 «Плохая связь»; 📡 рекомендация обновлять списки; 🚫 баннер при отсутствии интернета.",
+              "🖼️ Пролистывание фото в превью задач.",
+              "⏰ Показ времени создания/старта/завершения задачи.",
+              "💼 <b>Для менеджера:</b> обратные push-уведомления о выполненных задачах."
+            ]
+          }
+        ]
+      };
+    }
+
+    function loadState(){
+      try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)); }catch(e){ return null; }
+    }
+    function saveState(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    // ====== РЕНДЕР ======
+    function render(){
+      // Хедер
+      const year = document.getElementById("year");
+      year.textContent = new Date().getFullYear();
+
+      const mainList = document.getElementById("main-list");
+      const history = document.getElementById("history-list");
+      mainList.innerHTML = ""; history.innerHTML = "";
+
+      // сортировка по дате (новые сверху)
+      const releases = [...state.releases].sort((a,b)=> (b.date||"").localeCompare(a.date||""));
+
+      // заголовок страницы
+      if (releases.length){
+        document.getElementById("page-subtitle").textContent =
+          `Версия ${releases[0].version} от ${formatDate(releases[0].date)}`;
+      }
+
+      // APK ссылка
+      document.getElementById("download-link").href = state.apkUrl || "https://apk-download-gamma.vercel.app/app-release.apk";
+
+      // сколько показывать на главной
+      const n = Number(state.showOnMain || DEFAULT_SHOW_ON_MAIN);
+
+      releases.forEach((rel, idx)=>{
+        const block = releaseToMainBlock(rel);
+        if (idx < n) {
+          mainList.appendChild(block);
+        } else {
+          history.appendChild(releaseToHistoryBlock(rel));
+        }
+      });
+    }
+
+    function releaseToMainBlock(rel){
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <span class="title">🆕 Версия ${escapeHTML(rel.version)} — ${escapeHTML(rel.title||"Обновление")}</span>
+        <ul class="sub">
+          ${rel.items.map(s=>`<li>${s}</li>`).join("")}
+        </ul>`;
+      return li;
+    }
+
+    function releaseToHistoryBlock(rel){
+      const wrap = document.createElement("div");
+      wrap.className = "old-version";
+      wrap.innerHTML = `
+        <strong>Версия ${escapeHTML(rel.version)} — ${formatDate(rel.date)}</strong>
+        <ul>
+          ${rel.items.map(s=>`<li>${s}</li>`).join("")}
+        </ul>`;
+      return wrap;
+    }
+
+    function formatDate(iso){
+      if (!iso) return "";
+      const [y,m,d] = iso.split("-");
+      return `${Number(d)} ${ruMonth(m)} ${y}`;
+    }
+    function ruMonth(m){
+      const map = {
+        "01":"января","02":"февраля","03":"марта","04":"апреля","05":"мая","06":"июня",
+        "07":"июля","08":"августа","09":"сентября","10":"октября","11":"ноября","12":"декабря"
+      };
+      return map[m] || m;
+    }
+    function escapeHTML(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+    // ====== АДМИН ======
+    const gear = document.getElementById("gear");
+    const admin = document.getElementById("admin");
+    gear.addEventListener("click", ()=> {
+      admin.style.display = (admin.style.display==="block"?"none":"block");
+      // поставить сегодняшнюю дату если пусто
+      const dateEl = document.getElementById("v-date");
+      if(!dateEl.value) dateEl.value = todayISO();
+      // заполнить селект и ссылку по состоянию
+      document.getElementById("v-on-main").value = String(state.showOnMain || DEFAULT_SHOW_ON_MAIN);
+      document.getElementById("v-apk").value = state.apkUrl || "";
+    });
+
+    document.getElementById("publish").addEventListener("click", ()=>{
+      const version = document.getElementById("v-version").value.trim();
+      const date = document.getElementById("v-date").value || todayISO();
+      const title = document.getElementById("v-title").value.trim() || "Обновление";
+      const itemsRaw = document.getElementById("v-items").value.trim();
+      const showOnMain = Number(document.getElementById("v-on-main").value || DEFAULT_SHOW_ON_MAIN);
+      const apk = document.getElementById("v-apk").value.trim();
+
+      if (!version || !itemsRaw){
+        alert("Укажи версию и пункты релиза (по одному на строку).");
+        return;
+      }
+      const items = itemsRaw.split(/\r?\n/).filter(Boolean).map(line => line.trim());
+
+      // добавить релиз
+      state.releases.push({version, date, title, items});
+      state.showOnMain = showOnMain;
+      if (apk) state.apkUrl = apk;
+
+      saveState(); render();
+      // очистим ввод только пункты/заголовок/версию (дату оставим)
+      document.getElementById("v-version").value = "";
+      document.getElementById("v-title").value = "";
+      document.getElementById("v-items").value = "";
+    });
+
+    // Копирование HTML блоков (для вставки на твою существующую страницу)
+    function copyHTML(selector){
+      const node = document.querySelector(selector);
+      const html = node.innerHTML.trim();
+      navigator.clipboard.writeText(html).then(()=> alert("HTML скопирован в буфер обмена"));
+    }
+    document.getElementById("copy-main").addEventListener("click", ()=> copyHTML("#main-list"));
+    document.getElementById("copy-history").addEventListener("click", ()=> copyHTML("#history-list"));
+
+    // Импорт/экспорт
+    document.getElementById("export").addEventListener("click", ()=>{
+      const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "changelog.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+    document.getElementById("import").addEventListener("click", async ()=>{
+      const input = document.createElement("input");
+      input.type = "file"; input.accept = "application/json";
+      input.onchange = async () => {
+        const file = input.files[0]; if(!file) return;
+        const text = await file.text();
+        try{
+          const obj = JSON.parse(text);
+          if (!obj.releases) throw new Error("Нет поля releases");
+          state.releases = obj.releases;
+          state.showOnMain = obj.showOnMain || DEFAULT_SHOW_ON_MAIN;
+          state.apkUrl = obj.apkUrl || state.apkUrl;
+          saveState(); render();
+        }catch(e){ alert("Не удалось импортировать JSON: "+e.message); }
+      };
+      input.click();
+    });
+
+    document.getElementById("reset").addEventListener("click", ()=>{
+      if (confirm("Точно очистить все релизы? Это удалит данные в браузере.")){
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+      }
+    });
+
+    function toggleHistory(){
+      document.getElementById("history-list").classList.toggle("collapsed");
+    }
+    window.toggleHistory = toggleHistory;
+
+    // Первичная инициализация
+    render();
   </script>
 </body>
 </html>
-
